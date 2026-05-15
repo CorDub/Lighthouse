@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 	"net/url"
+	"fmt"
 
 	"Lighthouse/internal/auth"
 	"Lighthouse/internal/database"
@@ -23,6 +24,7 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		User
 	}
 
+	// decode params
 	decoder := json.NewDecoder(r.Body)
 	params := parameters{}
 	err := decoder.Decode(&params)
@@ -31,23 +33,27 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// get user by email
 	user, err := apiCfg.DB.GetUserByEmail(r.Context(), params.Email)
 	if err != nil {
 		RespondWithError(w, http.StatusUnauthorized, "Incorrect email or password", err)
 		return
 	}
 
+	// return if no password (gogle login)
 	if user.HashedPassword.Valid == false {
 		RespondWithError(w, http.StatusUnauthorized, "incorrect email or password", err)
 		return
 	}
 	
+	// check password is correct
 	match, err := auth.CheckPasswordHash(params.Password, user.HashedPassword.String)
 	if err != nil || !match {
 		RespondWithError(w, http.StatusUnauthorized, "Incorrect email or password", err)
 		return
 	}
 
+	// get jwt token
 	token, err := auth.MakeJWT(user.ID, apiCfg.JWT, time.Minute * 15)
 	if err != nil {
 		RespondWithError(w, http.StatusInternalServerError, "Unexpected server error", err)
@@ -384,4 +390,51 @@ func (apiCfg *ApiConfig) Callback(w http.ResponseWriter, r *http.Request) {
 	})
 
 	http.Redirect(w, r, "http://localhost:5173/home", http.StatusFound)
+}
+
+
+func (apiCfg *ApiConfig) CheckAuth(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("check auth pinged")
+	type respAuth struct {
+		User User `json:"user"`
+	}
+
+	//get JWT token
+	cookie, err := r.Cookie("token")
+
+	// if you don't have the JWT check if the refresh token is present
+	if err == http.ErrNoCookie {
+		_, err := r.Cookie("refreshToken")
+		if err != nil {
+			RespondWithError(w, http.StatusUnauthorized, "Unauthorized", err)
+			return
+		}
+
+		apiCfg.Refresh(w, r)
+		return
+	}
+	
+	// if it's there check the validity
+	tokenString := cookie.Value
+	userId, err := auth.ValidateJWT(tokenString, apiCfg.JWT)
+	if err != nil {
+		RespondWithError(w, http.StatusUnauthorized, "Unauthorized", err)
+		return
+	}
+
+	//get the user
+	dbUser, err := apiCfg.DB.GetUserByID(r.Context(), userId)
+	if err != nil {
+		RespondWithError(w, http.StatusUnauthorized, "Unauthorized", err)
+		return
+	}
+
+	//prepare user to correct format for frontend
+	handlersUser := dbUserToUser(dbUser)
+
+	// prepare and send response
+	userPayload := respAuth{
+		User: handlersUser,
+	}
+	RespondWithJSON(w, http.StatusAccepted, userPayload)
 }
