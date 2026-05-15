@@ -22,6 +22,16 @@ func main() {
 	dbURL := os.Getenv("DB_URL")
 	jwtSecret := os.Getenv("JWT_SECRET")
 	environment := os.Getenv("ENV")
+	googleClientId := os.Getenv("GOOGLE_CLIENT_ID")
+	googleSecret := os.Getenv("GOOGLE_SECRET")
+	sameSite := http.SameSiteStrictMode
+	secure := true
+
+	if environment == "dev" {
+		sameSite = http.SameSiteLaxMode
+		secure = false
+	}
+
 	if dbURL == "" {
 		log.Fatal("DB_URL must be set")
 	}
@@ -38,6 +48,10 @@ func main() {
 		DB: dbQueries,
 		JWT: jwtSecret,
 		Env: environment,
+		Secure: secure,
+		SameSite: sameSite,
+		GoogleClientID: googleClientId,
+		GoogleSecret: googleSecret,
 	}
 
 	//server setup
@@ -60,6 +74,8 @@ func main() {
 	mux.HandleFunc("POST /api/logout", apiCfg.Logout)
 	mux.HandleFunc("POST /api/users", apiCfg.CreateUser)
 	mux.HandleFunc("POST /api/refresh", apiCfg.Refresh)
+	mux.HandleFunc("GET /api/google", apiCfg.GoogleLogin)
+	mux.HandleFunc("GET /api/callback", apiCfg.Callback)
 
 	//protected
 	mux.Handle("GET /api/users", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.GetUsers)))

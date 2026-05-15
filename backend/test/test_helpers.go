@@ -71,7 +71,10 @@ func AddUser(t *testing.T, tx *database.Queries, email string, password string) 
 
 	createUserParams := database.CreateUserParams{
 		Email: email,
-		HashedPassword: hash,
+		HashedPassword: sql.NullString{
+			String: hash,
+			Valid: true,
+		},
 	}
 
 	_, err2 := tx.CreateUser(context.Background(), createUserParams) 

@@ -6,9 +6,12 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"net/url"
 
 	"Lighthouse/internal/auth"
 	"Lighthouse/internal/database"
+
+	"google.golang.org/api/idtoken"
 )
 
 func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
@@ -33,8 +36,13 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		RespondWithError(w, http.StatusUnauthorized, "Incorrect email or password", err)
 		return
 	}
+
+	if user.HashedPassword.Valid == false {
+		RespondWithError(w, http.StatusUnauthorized, "incorrect email or password", err)
+		return
+	}
 	
-	match, err := auth.CheckPasswordHash(params.Password, user.HashedPassword)
+	match, err := auth.CheckPasswordHash(params.Password, user.HashedPassword.String)
 	if err != nil || !match {
 		RespondWithError(w, http.StatusUnauthorized, "Incorrect email or password", err)
 		return
@@ -46,22 +54,13 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// dev settings
-	sameSite := http.SameSiteStrictMode
-	secure := true
-
-	if apiCfg.Env == "dev" {
-		sameSite = http.SameSiteLaxMode
-		secure = false
-	}
-
 	// set the JWT cookie
 	http.SetCookie(w, &http.Cookie{
 		Name: "token",
 		Value: token,
 		HttpOnly: true,
-		Secure: secure,
-		SameSite: sameSite,
+		Secure: apiCfg.Secure,
+		SameSite: apiCfg.SameSite,
 		Path: "/",
 		MaxAge: 15 * 60,
 	})
@@ -85,8 +84,8 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		Name: "refreshToken",
 		Value: refreshToken,
 		HttpOnly: true,
-		Secure: secure,
-		SameSite: sameSite,
+		Secure: apiCfg.Secure,
+		SameSite: apiCfg.SameSite,
 		Path: "/",
 		MaxAge: 30 * 24 * 60 * 60,
 	})
@@ -100,6 +99,7 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 }
+
 
 
 func (apiCfg *ApiConfig) Refresh(w http.ResponseWriter, r *http.Request) {
@@ -156,22 +156,13 @@ func (apiCfg *ApiConfig) Refresh(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// set both cookies	
-	sameSite := http.SameSiteStrictMode
-	secure := true
-
-	if apiCfg.Env == "dev" {
-		sameSite = http.SameSiteLaxMode
-		secure = false
-	}
-
 	// set the new refesh cookie
 	http.SetCookie(w, &http.Cookie{
 		Name: "refreshToken",
 		Value: newRefreshToken,
 		HttpOnly: true,
-		Secure: secure,
-		SameSite: sameSite,
+		Secure: apiCfg.Secure,
+		SameSite: apiCfg.SameSite,
 		Path: "/",
 		MaxAge: 30 * 24 * 60 * 60,
 	})
@@ -181,14 +172,15 @@ func (apiCfg *ApiConfig) Refresh(w http.ResponseWriter, r *http.Request) {
 		Name: "token",
 		Value: accessToken,
 		HttpOnly: true,
-		Secure: secure,
-		SameSite: sameSite,
+		Secure: apiCfg.Secure,
+		SameSite: apiCfg.SameSite,
 		Path: "/",
 		MaxAge: 15 * 60,
 	})
 
 	RespondWithJSON(w, http.StatusOK, nil)
 }
+
 
 
 func (apiCfg *ApiConfig) Logout(w http.ResponseWriter, r *http.Request) {
@@ -228,4 +220,168 @@ func (apiCfg *ApiConfig) Logout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	RespondWithJSON(w, http.StatusNoContent, nil)
+}
+
+
+
+func (apiCfg *ApiConfig) GoogleLogin(w http.ResponseWriter, r *http.Request) {
+	// this is for the CSRF token, we can reuse the same function than for the refresh token
+	token := auth.MakeRefreshToken()
+
+	// set the CSRF token in http only cookie to keep it somewhere
+	http.SetCookie(w, &http.Cookie{
+		Name: "csrfToken",
+		Value: token,
+		Path: "/api/callback",
+		HttpOnly: true,
+		SameSite: apiCfg.SameSite,
+		MaxAge: 300,
+	})
+
+	params := url.Values{
+		"client_id": {apiCfg.GoogleClientID},
+		"redirect_uri": {"http://localhost:8080/api/callback"},
+		"response_type": {"code"},
+		"scope": {"openid email"},
+		"state": {token},
+	}
+
+	authURL := "https://accounts.google.com/o/oauth2/v2/auth?" + params.Encode()
+
+	http.Redirect(w, r, authURL, http.StatusFound)
+}
+
+
+
+func (apiCfg *ApiConfig) Callback(w http.ResponseWriter, r *http.Request) {
+	type response struct {
+		User
+	}
+
+	// get CSRF token from cookie
+	cookie, err := r.Cookie("csrfToken")
+	if err != nil {
+		RespondWithError(w, http.StatusUnauthorized, "Unauthorized", err)
+		return
+	}
+	tokenString := cookie.Value
+
+	// compare it to the state sent back from Google
+	stateFromGoogle := r.URL.Query().Get("state")
+	match := tokenString == stateFromGoogle
+
+	// delete CSRF cookie
+	http.SetCookie(w, &http.Cookie{
+		Name: "csrfToken",
+		Value: "",
+		Path: "/api/callback",
+		HttpOnly: true,
+		SameSite: apiCfg.SameSite,
+		MaxAge: -1,
+	})
+
+	if !match {
+		RespondWithError(w, http.StatusUnauthorized, "Unauthorized", nil)
+		return
+	}
+
+	// get the code google sends from the params
+	code := r.URL.Query().Get("code")
+
+	// now send it back to get confirmation on their end and all the data needed
+	resp, err := http.PostForm("https://oauth2.googleapis.com/token", url.Values{
+	"code": {code},
+	"client_id": {apiCfg.GoogleClientID},
+	"client_secret": {apiCfg.GoogleSecret},
+	"redirect_uri": {"http://localhost:8080/api/callback"},
+	"grant_type": {"authorization_code"},
+	})
+	if err != nil {
+		RespondWithError(w, http.StatusInternalServerError, "Failed to exchange code", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	//decode the response
+	var tokenResponse struct{
+		IDToken string `json:"id_token"`
+	}
+	errDecoding := json.NewDecoder(resp.Body).Decode(&tokenResponse)
+	if err != nil {
+		RespondWithError(w, http.StatusInternalServerError, "Couldn't decode Google's answer", errDecoding)
+		return
+	}
+
+	//verify Google signature
+	payload, err := idtoken.Validate(r.Context(), tokenResponse.IDToken, apiCfg.GoogleClientID)
+	if err != nil {
+		RespondWithError(w, http.StatusUnauthorized, "Unauthorized", err)
+		return
+	}
+
+	//get the email from payload
+	email := payload.Claims["email"].(string)
+
+	//check if user exist in the database
+	user, err := apiCfg.DB.GetUserByEmail(r.Context(), email)
+
+	//create if doesn't exist
+	if err == sql.ErrNoRows {
+		createdUser, err := apiCfg.DB.CreateUserViaGoogle(r.Context(), email)
+		if err != nil {
+			RespondWithError(w, http.StatusInternalServerError, "Couldn't create a new user via Google", err)
+			return
+		}
+		user = createdUser
+	}
+
+	if err != nil {
+		RespondWithError(w, http.StatusInternalServerError, "Unexpected server error", err)
+		return
+	}
+
+	//log in the user - make the jwt
+	token, err := auth.MakeJWT(user.ID, apiCfg.JWT, time.Minute * 15)
+	if err != nil {
+		RespondWithError(w, http.StatusInternalServerError, "Unexpected server error", err)
+		return
+	}
+
+	// set the JWT cookie
+	http.SetCookie(w, &http.Cookie{
+		Name: "token",
+		Value: token,
+		HttpOnly: true,
+		Secure: apiCfg.Secure,
+		SameSite: apiCfg.SameSite,
+		Path: "/",
+		MaxAge: 15 * 60,
+	})
+
+	// create refresh token
+	refreshToken := auth.MakeRefreshToken()
+	refreshTokenParams := database.CreateRefreshTokenParams{
+		Token: refreshToken,
+		UserID: user.ID,
+	}
+
+	// save it in DB
+	if err := apiCfg.DB.CreateRefreshToken(r.Context(), refreshTokenParams); err != nil {
+		log.Printf("Couldn't save the refresh token in db: %s", err)
+		RespondWithError(w, http.StatusInternalServerError, "Unexpected server error", err)
+		return
+	}
+
+	// set the refresh cookie
+	http.SetCookie(w, &http.Cookie{
+		Name: "refreshToken",
+		Value: refreshToken,
+		HttpOnly: true,
+		Secure: apiCfg.Secure,
+		SameSite: apiCfg.SameSite,
+		Path: "/",
+		MaxAge: 30 * 24 * 60 * 60,
+	})
+
+	http.Redirect(w, r, "http://localhost:5173/home", http.StatusFound)
 }

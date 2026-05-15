@@ -11,24 +11,40 @@ function Login() {
   const navigate = useNavigate();
   const { setUser } = useUser();
 
-  async function submitForAuth(e: Event) {
-    e.preventDefault()
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        email: email(),
-        password: password()
-      })
-    })
+  // onMount(
+    
+  // )
+  // function checkAuth() {
+  //   if (user()) {
+  //     navigate("/home")
+  //   }
+  // }
 
-    if (response.ok) {
-      const data = await response.json()
-      console.log("data", data)
-      const parsedUser = UserSchema.parse(data);
-      setUser(parsedUser);
-      navigate("/home", { replace: true })
+  async function submitForAuth(e: Event) {
+    try {
+      e.preventDefault()
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          email: email(),
+          password: password()
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const parsedUser = UserSchema.parse(data);
+        setUser(parsedUser);
+        navigate("/home", { replace: true })
+      }
+    } catch(error) {
+      console.error(error)
     }
+  }
+
+  async function redirectToGoogle() {
+    window.location.href="/api/google"
   }
 
   return (
@@ -39,7 +55,9 @@ function Login() {
         onSubmit={(e) => submitForAuth(e)}>
 
         <div class="connect-google">
-          <button class="google-button clickable">
+          <button 
+            class="google-button clickable"
+            onClick={redirectToGoogle}>
             <svg 
               width="25" 
               height="25" 

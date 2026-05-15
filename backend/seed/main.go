@@ -30,7 +30,10 @@ func seedUser(apiCfg handlers.ApiConfig, email string, password string) (string,
 
 	params := database.CreateUserParams{
 		Email: email,
-		HashedPassword: hash,
+		HashedPassword: sql.NullString{
+			String: hash,
+			Valid: true,
+		},
 	}
 
 	_, err2 := apiCfg.DB.CreateUser(context.Background(), params)

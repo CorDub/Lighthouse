@@ -7,6 +7,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -23,11 +24,35 @@ RETURNING id, created_at, updated_at, email, hashed_password
 
 type CreateUserParams struct {
 	Email          string
-	HashedPassword string
+	HashedPassword sql.NullString
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, createUser, arg.Email, arg.HashedPassword)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Email,
+		&i.HashedPassword,
+	)
+	return i, err
+}
+
+const createUserViaGoogle = `-- name: CreateUserViaGoogle :one
+INSERT INTO users (id, created_at, updated_at, email)
+VALUES (
+  gen_random_uuid(),
+  NOW(),
+  NOW(),
+  $1
+)
+RETURNING id, created_at, updated_at, email, hashed_password
+`
+
+func (q *Queries) CreateUserViaGoogle(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRowContext(ctx, createUserViaGoogle, email)
 	var i User
 	err := row.Scan(
 		&i.ID,

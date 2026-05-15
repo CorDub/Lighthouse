@@ -6,6 +6,7 @@ import (
 	"time"
 	"strings"
 	"log"
+	"database/sql"
 
 	"Lighthouse/internal/auth"
 	"Lighthouse/internal/database"
@@ -61,7 +62,10 @@ func (apiCfg *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	createUserParams := database.CreateUserParams{
 		Email: params.Email,
-		HashedPassword: hash,
+		HashedPassword: sql.NullString{
+			String: hash,
+			Valid: true,
+		},
 	}
 
 	user, err := apiCfg.DB.CreateUser(r.Context(), createUserParams)
