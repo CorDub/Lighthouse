@@ -1,6 +1,6 @@
 import './Login.css';
 import Navbar from "./Navbar.tsx"
-import { createSignal } from 'solid-js'
+import { createRenderEffect, createSignal } from 'solid-js'
 import { useNavigate } from "@solidjs/router"
 import { useUser } from "./UserContext.tsx"
 import { UserSchema } from "./schemas/user.ts";
@@ -9,16 +9,13 @@ function Login() {
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
   const navigate = useNavigate();
-  const { setUser } = useUser();
+  const { user, setUser } = useUser();
 
-  // onMount(
-    
-  // )
-  // function checkAuth() {
-  //   if (user()) {
-  //     navigate("/home")
-  //   }
-  // }
+  createRenderEffect(() => {
+      if (user()) {
+        navigate("/home", {replace: true})
+      }
+  })
 
   async function submitForAuth(e: Event) {
     try {

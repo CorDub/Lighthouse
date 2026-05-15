@@ -1,6 +1,11 @@
-import { createContext, createSignal, useContext} from "solid-js";
-import { type ParentProps } from "solid-js";
-import { type User } from "./schemas/user.ts";
+import { 
+  createContext, 
+  createSignal, 
+  useContext,
+  onMount,
+  type ParentProps
+} from "solid-js";
+import { type User, UserSchema } from "./schemas/user.ts";
 
 type UserContext = {
   user: () => User;
@@ -11,6 +16,25 @@ export const UserContext = createContext<UserContext>();
 
 export function UserProvider(props: ParentProps) {
   const [user, setUser] = createSignal<User>(null);
+
+  onMount(
+    async () => {
+      try {
+          const response = await fetch("/api/checkAuth",  {
+          method: "GET",
+          credentials: "include",
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          const parsedUser = UserSchema.parse(data.user);
+          setUser(parsedUser);
+        }
+      } catch(error) {
+        console.error(error)
+      }
+    }
+  )
 
   return (
     <UserContext.Provider value ={{ user, setUser }}>
