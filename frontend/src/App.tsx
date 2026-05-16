@@ -1,9 +1,10 @@
 import './App.css'
 import { Route, Router, Navigate } from "@solidjs/router";
-import Login from "./Login.tsx"
-import Home from "./Home.tsx"
 import { UserProvider } from './UserContext.tsx';
 import ProtectedRoute from './ProtectedRoute.tsx';
+import Login from "./Login.tsx";
+import Home from "./Home.tsx";
+import ForgottenPassword from "./ForgottenPassword.tsx";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Router>
           <Route path="/" component={() => <Navigate href="/login" />} />
           <Route path="/login" component={Login} />
+          <Route path="/forgottenPassword" component={ForgottenPassword} />
           
           <Route component={ProtectedRoute}>
             <Route path="/home" component={Home} />

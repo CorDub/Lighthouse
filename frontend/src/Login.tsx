@@ -98,13 +98,21 @@ function Login() {
           </div>
           <button 
             type="submit"
-            class="accept-button clickable"
+            class="green-button clickable"
             onClick={(e) => submitForAuth(e)}>
               Submit
           </button>
         </div>
         
       </form>
+
+      <div class="lost-password">
+        <a 
+          class="subdued-link"
+          onClick={() => navigate("/forgottenPassword")}>
+            Forgotten password?
+        </a>
+      </div>
     </div>
   )
 }

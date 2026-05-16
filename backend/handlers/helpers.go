@@ -50,3 +50,15 @@ func dbUserToUser(user database.User) User {
 		Email: user.Email,
 	}
 }
+
+func decodeRequestBody[T any](w http.ResponseWriter, r *http.Request) (T, error) {
+	var payload T
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&payload)
+	if err != nil {
+		RespondWithError(w, http.StatusBadRequest, "Couldn't decode parameters", err)
+		return payload, err
+	}
+
+	return payload, nil
+}

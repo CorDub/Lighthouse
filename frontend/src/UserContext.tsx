@@ -20,7 +20,7 @@ export function UserProvider(props: ParentProps) {
   onMount(
     async () => {
       try {
-          const response = await fetch("/api/checkAuth",  {
+        const response = await fetch("/api/checkAuth",  {
           method: "GET",
           credentials: "include",
         })
