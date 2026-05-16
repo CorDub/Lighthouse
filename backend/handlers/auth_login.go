@@ -1,0 +1,102 @@
+package handlers
+
+import (
+	"encoding/json"
+	"log"
+	"net/http"
+	"time"
+
+	"Lighthouse/internal/auth"
+	"Lighthouse/internal/database"
+)
+
+func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
+	type parameters struct {
+		Email string `json:"email"`
+		Password string `json:"password"`
+	}
+	type response struct {
+		User
+	}
+
+	// decode params
+	decoder := json.NewDecoder(r.Body)
+	params := parameters{}
+	err := decoder.Decode(&params)
+	if err != nil {
+		RespondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
+		return
+	}
+
+	// get user by email
+	user, err := apiCfg.DB.GetUserByEmail(r.Context(), params.Email)
+	if err != nil {
+		RespondWithError(w, http.StatusUnauthorized, "Incorrect email or password", err)
+		return
+	}
+
+	// return if no password (gogle login)
+	if user.HashedPassword.Valid == false {
+		RespondWithError(w, http.StatusUnauthorized, "incorrect email or password", err)
+		return
+	}
+	
+	// check password is correct
+	match, err := auth.CheckPasswordHash(params.Password, user.HashedPassword.String)
+	if err != nil || !match {
+		RespondWithError(w, http.StatusUnauthorized, "Incorrect email or password", err)
+		return
+	}
+
+	// get jwt token
+	token, err := auth.MakeJWT(user.ID, apiCfg.JWT, time.Minute * 15)
+	if err != nil {
+		RespondWithError(w, http.StatusInternalServerError, "Unexpected server error", err)
+		return
+	}
+
+	// set the JWT cookie
+	http.SetCookie(w, &http.Cookie{
+		Name: "token",
+		Value: token,
+		HttpOnly: true,
+		Secure: apiCfg.Secure,
+		SameSite: apiCfg.SameSite,
+		Path: "/",
+		MaxAge: 15 * 60,
+	})
+
+	// create refresh token
+	refreshToken := auth.MakeRefreshToken()
+	refreshTokenParams := database.CreateRefreshTokenParams{
+		Token: refreshToken,
+		UserID: user.ID,
+	}
+
+	// save it in DB
+	if err := apiCfg.DB.CreateRefreshToken(r.Context(), refreshTokenParams); err != nil {
+		log.Printf("Couldn't save the refresh token in db: %s", err)
+		RespondWithError(w, http.StatusInternalServerError, "Unexpected server error", err)
+		return
+	}
+
+	// set the refresh cookie
+	http.SetCookie(w, &http.Cookie{
+		Name: "refreshToken",
+		Value: refreshToken,
+		HttpOnly: true,
+		Secure: apiCfg.Secure,
+		SameSite: apiCfg.SameSite,
+		Path: "/",
+		MaxAge: 30 * 24 * 60 * 60,
+	})
+
+	RespondWithJSON(w, http.StatusOK, response{
+		User: User{
+			ID: user.ID,
+			Email: user.Email,
+			CreatedAt: user.CreatedAt,
+			UpdatedAt: user.UpdatedAt,
+		},
+	})
+}

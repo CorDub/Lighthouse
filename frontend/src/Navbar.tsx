@@ -22,7 +22,13 @@ function Navbar() {
 
   return (
     <div class="navbar">
-      <div class="nav-logo">Lighthouse</div>
+      <div class="nav-logo">
+        <a 
+          class="subdued-white-link"
+          onClick={() => navigate("/")}>
+            Lighthouse
+        </a>
+      </div>
       <Show when={user()}>
         <div class="nav-logout">
           <button 

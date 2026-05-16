@@ -77,6 +77,7 @@ func main() {
 	mux.HandleFunc("GET /api/google", apiCfg.GoogleLogin)
 	mux.HandleFunc("GET /api/callback", apiCfg.Callback)
 	mux.HandleFunc("GET /api/checkAuth", apiCfg.CheckAuth)
+	mux.HandleFunc("POST /api/checkPassword", apiCfg.checkPassword)
 
 	//protected
 	mux.Handle("GET /api/users", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.GetUsers)))
