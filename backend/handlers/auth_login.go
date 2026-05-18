@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"time"
@@ -20,11 +19,10 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// decode params
-	decoder := json.NewDecoder(r.Body)
 	params := parameters{}
-	err := decoder.Decode(&params)
+	err := decodeRequestBody(r, &params)
 	if err != nil {
-		RespondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
+		RespondWithError(w, http.StatusBadRequest, "Couldn't decode parameters", err)
 		return
 	}
 

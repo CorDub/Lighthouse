@@ -16,6 +16,9 @@ type ApiConfig struct {
 	SameSite http.SameSite
 	GoogleClientID string
 	GoogleSecret string
+	MailtrapUsername string
+	MailtrapPassword string
+	From string
 }
 
 var validate = validator.New(validator.WithRequiredStructEnabled())

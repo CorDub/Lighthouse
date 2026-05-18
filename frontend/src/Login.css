@@ -20,6 +20,7 @@
   padding: 1.5rem;
   border-radius: 15px;
   width: 50%;
+  min-width: 270px;
 }
 
 .connect-google {

@@ -5,6 +5,7 @@ import ProtectedRoute from './ProtectedRoute.tsx';
 import Login from "./Login.tsx";
 import Home from "./Home.tsx";
 import ForgottenPassword from "./ForgottenPassword.tsx";
+import ResetPassword from "./ResetPassword.tsx";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" component={() => <Navigate href="/login" />} />
           <Route path="/login" component={Login} />
           <Route path="/forgottenPassword" component={ForgottenPassword} />
+          <Route path="/resetPassword" component={ResetPassword} />
           
           <Route component={ProtectedRoute}>
             <Route path="/home" component={Home} />

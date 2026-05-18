@@ -51,14 +51,12 @@ func dbUserToUser(user database.User) User {
 	}
 }
 
-func decodeRequestBody[T any](w http.ResponseWriter, r *http.Request) (T, error) {
-	var payload T
+func decodeRequestBody[T any](r *http.Request, payload *T) error {
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&payload)
+	err := decoder.Decode(payload)
 	if err != nil {
-		RespondWithError(w, http.StatusBadRequest, "Couldn't decode parameters", err)
-		return payload, err
+		return err
 	}
 
-	return payload, nil
+	return nil
 }
