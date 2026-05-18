@@ -13,3 +13,11 @@ gooseDown:
 
 gooseStatus:
 	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" status
+
+gooseReset:
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" reset
+
+reset:
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" reset
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" up
+	go run seed/main.go

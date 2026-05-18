@@ -54,11 +54,11 @@ body {
     var(--black),
     var(--grey),
     var(--dark-green) 33%,
-    var(--light-green),
-    var(--pale-green) 62%,
-    var(--white) 66%,
-    var(--gold) 90%,
-    var(--orange)
+    var(--light-green) 62%,
+    /* var(--pale-green) 62%, */
+    var(--gold) 86%,
+    /* var(--orange) 90%, */
+    var(--white)
   );
 }
 

@@ -11,6 +11,15 @@ import (
 	"github.com/google/uuid"
 )
 
+type MagicLinkToken struct {
+	Token     string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserID    uuid.UUID
+	ExpiresAt time.Time
+	RevokedAt sql.NullTime
+}
+
 type RefreshToken struct {
 	Token     string
 	CreatedAt time.Time

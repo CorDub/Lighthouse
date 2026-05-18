@@ -24,8 +24,13 @@ func main() {
 	environment := os.Getenv("ENV")
 	googleClientId := os.Getenv("GOOGLE_CLIENT_ID")
 	googleSecret := os.Getenv("GOOGLE_SECRET")
+	mailtrapUsername := os.Getenv("MAILTRAP_USERNAME")
+	mailtrapPassword := os.Getenv("MAILTRAP_PASSWORD")
 	sameSite := http.SameSiteStrictMode
 	secure := true
+	from := os.Getenv("FROM_TEST")
+
+	// To DO LATER ON: add versions for staging / prod
 
 	if environment == "dev" {
 		sameSite = http.SameSiteLaxMode
@@ -52,6 +57,9 @@ func main() {
 		SameSite: sameSite,
 		GoogleClientID: googleClientId,
 		GoogleSecret: googleSecret,
+		MailtrapUsername: mailtrapUsername,
+		MailtrapPassword: mailtrapPassword,
+		From: from,
 	}
 
 	//server setup
@@ -77,7 +85,8 @@ func main() {
 	mux.HandleFunc("GET /api/google", apiCfg.GoogleLogin)
 	mux.HandleFunc("GET /api/callback", apiCfg.Callback)
 	mux.HandleFunc("GET /api/checkAuth", apiCfg.CheckAuth)
-	mux.HandleFunc("POST /api/checkPassword", apiCfg.checkPassword)
+	mux.HandleFunc("POST /api/checkPassword", apiCfg.CheckPassword)
+	mux.HandleFunc("POST /api/changePassword", apiCfg.ChangePassword)
 
 	//protected
 	mux.Handle("GET /api/users", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.GetUsers)))
