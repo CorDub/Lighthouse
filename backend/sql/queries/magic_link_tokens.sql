@@ -19,3 +19,10 @@ WHERE token = $1;
 SELECT *
 FROM magic_link_tokens
 WHERE token = $1;
+
+-- name: RevokeMagicLinkTokensFromUser :exec
+UPDATE magic_link_tokens
+SET updated_at = NOW(),
+  revoked_at = NOW()
+WHERE user_id = $1
+AND revoked_at IS NULL;

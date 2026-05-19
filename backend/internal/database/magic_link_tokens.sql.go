@@ -73,3 +73,16 @@ func (q *Queries) RevokeMagicLinkToken(ctx context.Context, token string) error 
 	_, err := q.db.ExecContext(ctx, revokeMagicLinkToken, token)
 	return err
 }
+
+const revokeMagicLinkTokensFromUser = `-- name: RevokeMagicLinkTokensFromUser :exec
+UPDATE magic_link_tokens
+SET updated_at = NOW(),
+  revoked_at = NOW()
+WHERE user_id = $1
+AND revoked_at IS NULL
+`
+
+func (q *Queries) RevokeMagicLinkTokensFromUser(ctx context.Context, userID uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, revokeMagicLinkTokensFromUser, userID)
+	return err
+}
