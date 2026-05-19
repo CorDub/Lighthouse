@@ -1,17 +1,19 @@
 import './Login.css';
 import { createRenderEffect, createSignal, Show } from 'solid-js';
 import { useNavigate } from "@solidjs/router"
-import { type ValueCheck } from '../helpers/helpersTypes.ts';
+import { type ValueCheck } from './helpers/helpersTypes.ts';
 import Navbar from "./Navbar.tsx"
 import Errors from "./Errors.tsx"
+import TextInput from "./TextInput.tsx"
+import PasswordInput from "./PasswordInput.tsx"
 import { useUser } from "./UserContext.tsx"
 import { UserSchema } from "./schemas/user.ts";
-import { checkForErrors } from "../helpers/checkForErrors.ts";
+import { checkForErrors } from "./helpers/checkForErrors.ts";
 
 function Login() {
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
-  const [errorList, setErrorList] = createSignal<string[]>([]);
+  const [errors, setErrors] = createSignal<string[]>([]);
   const navigate = useNavigate();
   const { user, setUser } = useUser();
 
@@ -32,8 +34,8 @@ function Login() {
       ]
       const checksResults = checkForErrors(...checks)
 
-      setErrorList(checksResults)
-      if (setErrorList.length > 0) {
+      setErrors(checksResults)
+      if (setErrors.length > 0) {
         return
       }
 
@@ -96,32 +98,25 @@ function Login() {
 
         <div class="login-password">
           <div class="form-line">
-            <input 
-              type="text"
-              class="form-input clickable"
-              classList={{"form-input-error": errorList().length > 0}}
-              onFocus={() => setErrorList([])}
-              onInput={(e) => setEmail(e.target.value)}
+            <TextInput 
+              errors={errors()}
+              errorsSetFn={setErrors}
               value={email()}
+              valueSetFn={setEmail}
               placeholder="Enter email address"
-              autofocus
-            />
+              autofocus={true}/>
           </div>
           <div class="form-line">
-            <input 
-              type="password"
-              class="form-input clickable"
-              classList={{"form-input-error": errorList().length > 0}}
-              onFocus={() => setErrorList([])}
-              onInput={(e) => setPassword(e.target.value)}
+            <PasswordInput 
+              errors={errors()}
+              errorsSetFn={setErrors}
               value={password()}
-              placeholder="Enter password"
-            />
+              valueSetFn={setPassword}/>
           </div>
 
-          <Show when={errorList().length > 0} >
+          <Show when={errors().length > 0} >
             <Errors 
-              errors={errorList()}
+              errors={errors()}
               margin={{marginBottom: 0}}/>
           </Show>
 

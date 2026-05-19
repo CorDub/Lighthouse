@@ -1,0 +1,31 @@
+.green-button {
+  margin-top: 0.5rem;
+  border-radius: 15px;
+  border: 1px solid var(--light-green);
+  color: var(--white);
+  background-color: var(--light-green);
+  transition: 
+    border 0.25s ease,
+    color 0.25s ease;
+}
+
+.green-button:hover {
+  border: 1px solid var(--dark-green);
+  color: var(--black);
+}
+
+.white-button {
+  border-radius: 15px;
+  border: 1px solid var(--white);
+  color: var(--black);
+  background-color: var(--white);
+  transition: border 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.white-button:hover {
+  border: 1px solid var(--light-green);
+  background-color: var(--light-green);
+  color: var(--white)
+}

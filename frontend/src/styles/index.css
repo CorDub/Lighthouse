@@ -26,6 +26,7 @@
 
   --black: hsl(180,4%,9%);
   --grey: hsl(162,11%,29%);
+  --pale-grey: hsl(162,11%,45%);
   --dark-green: hsl(163,57%,28%);
   --light-green: hsl(163,65%,55%);
   --pale-green: hsl(163,51%,88%);
@@ -47,6 +48,10 @@
   @media (max-width: 1024px) {
     font-size: 16px;
   } */
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -74,8 +79,8 @@ body, input, textarea, button, select {
 }
 
 #root {
-  /* width: 1126px;
-  max-width: 100%; */
+  width: 1126px;
+  max-width: 100%;
   margin: 0 auto;
   text-align: center;
   /* border-inline: 1px solid var(--border); */
