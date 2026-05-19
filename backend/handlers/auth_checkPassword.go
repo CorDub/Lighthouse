@@ -33,7 +33,14 @@ func (apiCfg *ApiConfig) CheckPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//send an email with magic link token
+	//revoke any pending magic link tokens
+	errRevoke := apiCfg.DB.RevokeMagicLinkTokensFromUser(r.Context(), user.ID)
+	if errRevoke != nil {
+		RespondWithError(w, http.StatusInternalServerError, "Unexpected server error", err)
+		return
+	}
+
+	//send an email with new magic link token
 	rawToken := auth.MakeRefreshToken()
 	params := database.CreateMagicLinkTokenParams{
 		Token: rawToken,

@@ -11,8 +11,8 @@ import (
 
 func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
-		Email string `json:"email"`
-		Password string `json:"password"`
+		Email string `json:"email" validate:"required,email,max=254"`
+		Password string `json:"password" validate:"required,min=8,max=72,printascii"`
 	}
 	type response struct {
 		User

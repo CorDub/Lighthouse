@@ -1,13 +1,17 @@
 import './Login.css';
-import Navbar from "./Navbar.tsx"
-import { createRenderEffect, createSignal } from 'solid-js'
+import { createRenderEffect, createSignal, Show } from 'solid-js';
 import { useNavigate } from "@solidjs/router"
+import { type ValueCheck } from '../helpers/helpersTypes.ts';
+import Navbar from "./Navbar.tsx"
+import Errors from "./Errors.tsx"
 import { useUser } from "./UserContext.tsx"
 import { UserSchema } from "./schemas/user.ts";
+import { checkForErrors } from "../helpers/checkForErrors.ts";
 
 function Login() {
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
+  const [errorList, setErrorList] = createSignal<string[]>([]);
   const navigate = useNavigate();
   const { user, setUser } = useUser();
 
@@ -20,6 +24,20 @@ function Login() {
   async function submitForAuth(e: Event) {
     try {
       e.preventDefault()
+
+      // check for errors before sending to server
+      const checks: ValueCheck[] = [
+        ["email", email()],
+        ["password", password()]
+      ]
+      const checksResults = checkForErrors(...checks)
+
+      setErrorList(checksResults)
+      if (setErrorList.length > 0) {
+        return
+      }
+
+      // if no errors send it through
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -81,6 +99,8 @@ function Login() {
             <input 
               type="text"
               class="form-input clickable"
+              classList={{"form-input-error": errorList().length > 0}}
+              onFocus={() => setErrorList([])}
               onInput={(e) => setEmail(e.target.value)}
               value={email()}
               placeholder="Enter email address"
@@ -91,11 +111,20 @@ function Login() {
             <input 
               type="password"
               class="form-input clickable"
+              classList={{"form-input-error": errorList().length > 0}}
+              onFocus={() => setErrorList([])}
               onInput={(e) => setPassword(e.target.value)}
               value={password()}
               placeholder="Enter password"
             />
           </div>
+
+          <Show when={errorList().length > 0} >
+            <Errors 
+              errors={errorList()}
+              margin={{marginBottom: 0}}/>
+          </Show>
+
           <button 
             type="submit"
             class="green-button clickable"
@@ -103,7 +132,6 @@ function Login() {
               Submit
           </button>
         </div>
-        
       </form>
 
       <div class="lost-password">
@@ -113,6 +141,7 @@ function Login() {
             Forgotten password?
         </a>
       </div>
+
     </div>
   )
 }
