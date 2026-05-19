@@ -1,20 +1,28 @@
 import "./ForgottenPassword.css";
 import { createSignal, Show } from "solid-js";
+import { type ValueCheck } from "./helpers/helpersTypes.ts";
 import Navbar from "./Navbar";
-import { UserSchema } from "./schemas/user.ts"
+import Errors from "./Errors.tsx";
+import TextInput from "./TextInput.tsx";
+import { checkForErrors } from "./helpers/checkForErrors.ts";
 
 function ForgottenPassword() {
   const [email, setEmail] = createSignal("")
   const [resetAccepted, setResetAccepted] = createSignal(false)
+  const [errors, setErrors] = createSignal<string[]>([]);
 
   async function resetPassword(e: Event) {
     try {
       e.preventDefault()
 
       //check if the email sent is a valid password
-      const validityCheck = UserSchema.unwrap().shape.email.safeParse(email())
-      if (!validityCheck.success) {
-        console.error(validityCheck.error.message)
+      const checks: ValueCheck[] = [
+        ["email", email()]
+      ]
+      const checksResults = checkForErrors(...checks)
+
+      if (checksResults.length > 0) {
+        setErrors(checksResults)
         return
       }
 
@@ -47,11 +55,15 @@ function ForgottenPassword() {
         <form 
           class="confirm-email-form"
           onSubmit={(e) => resetPassword(e)}>
-          <input
-            class="form-input"
-            type="text"
-            placeholder="Enter email address"
-            onChange={(e) => setEmail(e.target.value)}/>
+          <TextInput 
+            errors={errors()}
+            errorsSetFn={setErrors}
+            value={email()}
+            valueSetFn={setEmail}
+            placeholder="Enter email address"/>
+
+          <Errors errors={errors()}/>
+
           <button 
             class="green-button clickable"
             onClick={(e) => resetPassword(e)}>

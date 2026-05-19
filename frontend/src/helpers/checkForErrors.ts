@@ -1,12 +1,10 @@
 import { type ValueCheck } from "./helpersTypes.ts"
-import { UserSchema } from "../src/schemas/user.ts"
+import { UserSchema } from "../schemas/user.ts"
 
 
 // final functions
 
 export function checkForErrors(...checks: ValueCheck[]): string[] {
-  console.log("check for Errors")
-  console.log("checks", checks)
   const finalErrorList: string[] = []
 
   for (const check of checks) {

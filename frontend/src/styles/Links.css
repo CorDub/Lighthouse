@@ -1,0 +1,18 @@
+.subdued-link {
+  color: var(--pale-grey);
+  transition: color 0.25s ease;
+}
+
+.subdued-link:hover {
+  color: var(--black);
+  cursor: pointer;
+}
+
+.subdued-white-link {
+  color: var(--white)
+}
+
+.subdued-white-link:hover {
+  cursor: pointer;
+  text-shadow: 0 0 10px var(--white);
+}

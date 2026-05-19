@@ -4,7 +4,7 @@
 }
 
 .login {
-  width: 40%;
+  width: 60%;
   padding-top: 1rem;
   display: flex;
   flex-direction: column;
@@ -17,7 +17,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
   border-radius: 15px;
   width: 50%;
   min-width: 270px;
@@ -37,10 +36,19 @@
   align-items: center;
 }
 
+.google-button:hover {
+  border: 1px solid var(--dark-green);
+  color: var(--black);
+}
+
 .google-button-text {
   margin-left: 0.5rem;
 }
 
 .login-password {
   width: 100%
+}
+
+.lost-password {
+  margin-top: 1rem;
 }

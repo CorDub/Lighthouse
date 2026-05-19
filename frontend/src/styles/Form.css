@@ -1,0 +1,45 @@
+.form-title {
+  font-family: var(--elm-sans);
+  margin-bottom: 1.5em;
+}
+
+.form-line {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.form-label {
+  font-family: var(--elm-sans);
+}
+
+.form-input {
+  border-radius: 15px;
+  border: 1px solid var(--grey);
+  padding-left: 0.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  width: 100%;
+  min-width: 250px;
+  transition:
+    border 0.25s ease,
+}
+
+.form-input:hover {
+  border: 1px solid var(--black);
+}
+
+.form-input:hover::placeholder {
+  color: var(--black)
+}
+
+.form-input:focus {
+  outline: none;
+  border: 1px solid var(--black);
+}
+
+.form-input-error {
+  border: 2px solid var(--red);
+}
