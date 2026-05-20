@@ -6,6 +6,7 @@ import {
   type ParentProps
 } from "solid-js";
 import { type User, UserSchema } from "./schemas/user.ts";
+import { BASE_URL } from "./helpers/config.ts";
 
 type UserContext = {
   user: () => User;
@@ -20,7 +21,7 @@ export function UserProvider(props: ParentProps) {
   onMount(
     async () => {
       try {
-        const response = await fetch("/api/checkAuth",  {
+        const response = await fetch(`${BASE_URL}/api/checkAuth`,  {
           method: "GET",
           credentials: "include",
         })

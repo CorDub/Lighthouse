@@ -11,7 +11,7 @@ import (
 func (apiCfg *ApiConfig) CheckPassword(w http.ResponseWriter, r *http.Request) {
 	//extract email sent
 	type body struct {
-		Email string `json:"email"`
+		Email string `json:"email" validate:"required,email,max=254"`
 	}
 
 	decodedBody := body{}

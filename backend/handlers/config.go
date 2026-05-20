@@ -19,6 +19,7 @@ type ApiConfig struct {
 	MailtrapUsername string
 	MailtrapPassword string
 	From string
+	BaseURL string
 }
 
 var validate = validator.New(validator.WithRequiredStructEnabled())
