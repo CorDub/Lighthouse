@@ -1,11 +1,12 @@
 import { createSignal, Show, For } from "solid-js"
 import Navbar from "./Navbar.tsx"
+import { BASE_URL } from "./helpers/config.ts";
 
 function Home () {
   const [users, setUsers] = createSignal(null);
 
   async function fetchUsers() {
-    const response = await fetch("/api/users", {
+    const response = await fetch(`${BASE_URL}/api/users`, {
       method:"GET",
       credentials: "include",
       headers: {"Content-Type":"application/json"},

@@ -9,6 +9,7 @@ import PasswordInput from "./PasswordInput.tsx"
 import { useUser } from "./UserContext.tsx"
 import { UserSchema } from "./schemas/user.ts";
 import { checkForErrors } from "./helpers/checkForErrors.ts";
+import { BASE_URL } from './helpers/config.ts';
 
 function Login() {
   const [email, setEmail] = createSignal("");
@@ -34,13 +35,13 @@ function Login() {
       ]
       const checksResults = checkForErrors(...checks)
 
-      setErrors(checksResults)
-      if (setErrors.length > 0) {
+      if (checksResults.length > 0) {
+        setErrors(checksResults)
         return
       }
 
       // if no errors send it through
-      const response = await fetch("/api/login", {
+      const response = await fetch(`${BASE_URL}/api/login`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
@@ -73,6 +74,7 @@ function Login() {
 
         <div class="connect-google">
           <button 
+            type="button"
             class="google-button clickable"
             onClick={redirectToGoogle}>
             <svg 
@@ -106,7 +108,8 @@ function Login() {
               placeholder="Enter email address"
               autofocus={true}/>
           </div>
-          <div class="form-line">
+          <div class="form-line"
+            style={{"margin-bottom": "0.75rem"}}>
             <PasswordInput 
               errors={errors()}
               errorsSetFn={setErrors}

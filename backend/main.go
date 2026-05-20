@@ -29,8 +29,8 @@ func main() {
 	sameSite := http.SameSiteStrictMode
 	secure := true
 	from := os.Getenv("FROM_TEST")
-
-	// To DO LATER ON: add versions for staging / prod
+	baseURL := "http://localhost:8080"
+	// To DO LATER ON: add From versions for staging / prod
 
 	if environment == "dev" {
 		sameSite = http.SameSiteLaxMode
@@ -60,6 +60,7 @@ func main() {
 		MailtrapUsername: mailtrapUsername,
 		MailtrapPassword: mailtrapPassword,
 		From: from,
+		BaseURL: baseURL,
 	}
 
 	//server setup

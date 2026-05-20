@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import Errors from "./Errors.tsx";
 import TextInput from "./TextInput.tsx";
 import { checkForErrors } from "./helpers/checkForErrors.ts";
+import { BASE_URL } from "./helpers/config.ts";
 
 function ForgottenPassword() {
   const [email, setEmail] = createSignal("")
@@ -26,7 +27,7 @@ function ForgottenPassword() {
         return
       }
 
-      const response = await fetch("/api/checkPassword", {
+      const response = await fetch(`${BASE_URL}/api/checkPassword`, {
         method: "POST",
         credentials: "include",
         headers: {"Content-Type": "application/json"},

@@ -14,7 +14,7 @@ function PasswordInput(props: PasswordInputProps) {
   const defaults = mergeProps({
     placeholder: "Enter your password",
     autofocus: false
-  })
+  }, props)
   const [visible, setVisible] = createSignal(false)
 
   //autofocus
