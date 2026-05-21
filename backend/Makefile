@@ -7,6 +7,7 @@ test:
 
 gooseUp:
 	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" up
+	cd schema_builder && go run .
 
 gooseDown:
 	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" down
@@ -20,4 +21,5 @@ gooseReset:
 reset:
 	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" reset
 	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" up
+	cd schema_builder && go run .
 	go run seed/main.go
