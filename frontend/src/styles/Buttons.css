@@ -28,3 +28,30 @@
   background-color: var(--light-green);
   color: var(--white)
 }
+
+.black-button {
+  border-radius: 15px;
+  border: 1px solid var(--black);
+  background-color: var(--black);
+  color: var(--white);
+  transition: border 0.25s ease;
+}
+
+.black-button:hover {
+  border: 1px solid var(--pale-grey);
+}
+
+.grey-button {
+  border-radius: 15px;
+  border: 1px solid var(--pale-grey);
+  background-color: var(--pale-grey);
+  color: var(--white);
+  transition: 
+    border 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.grey-button:hover {
+  border: 1px solid var(--grey);
+  background-color: var(--grey);
+}

@@ -4,6 +4,7 @@ USERS
 		updated_at TIMESTAMPTZ NOT NULL
 	  email TEXT NOT NULL UNIQUE
 		hashed_password TEXT
+		language TEXT NOT NULL DEFAULT 'en'
 
 REFRESH_TOKENS
 	  token TEXT PRIMARY KEY

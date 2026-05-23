@@ -19,3 +19,8 @@
 .nav-logout {
   padding-right: 1rem;
 }
+
+.nav-right {
+  margin-right: 1rem;
+  gap: 1rem;
+}

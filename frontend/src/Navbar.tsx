@@ -1,8 +1,9 @@
-import "./Navbar.css"
+import "./styles/Navbar.css"
 import { Show } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { useUser } from "./UserContext";
 import { BASE_URL } from "./helpers/config.ts";
+import LanguagePicker from "./LanguagePicker.tsx";
 
 function Navbar() {
   const navigate = useNavigate()
@@ -30,15 +31,18 @@ function Navbar() {
             Lighthouse
         </a>
       </div>
-      <Show when={user()}>
-        <div class="nav-logout">
-          <button 
-            class="clickable white-button"
-            onClick={logout}>
-              Logout
-            </button>
-        </div>
-      </Show>
+      <div class="nav-right">
+        <LanguagePicker />
+        <Show when={user()}>
+          <div class="nav-logout">
+            <button 
+              class="clickable white-button"
+              onClick={logout}>
+                Logout
+              </button>
+          </div>
+        </Show>
+      </div>
     </div>
   )
 }
