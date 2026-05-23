@@ -48,6 +48,7 @@ func dbUserToUser(user database.User) User {
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 		Email: user.Email,
+		Language: user.Language,
 	}
 }
 
