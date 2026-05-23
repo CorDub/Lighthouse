@@ -89,12 +89,9 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		MaxAge: 30 * 24 * 60 * 60,
 	})
 
+	handlerUser := dbUserToUser(user)
+
 	RespondWithJSON(w, http.StatusOK, response{
-		User: User{
-			ID: user.ID,
-			Email: user.Email,
-			CreatedAt: user.CreatedAt,
-			UpdatedAt: user.UpdatedAt,
-		},
+		User: handlerUser,
 	})
 }

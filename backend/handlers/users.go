@@ -18,6 +18,7 @@ type User struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	Email string `json:"email"`
+	Language string `json:"language"`
 }
 
 type getUsersResponse struct {
