@@ -3,6 +3,7 @@ import './styles/Form.css'
 import './styles/Buttons.css'
 import './styles/Links.css'
 import './styles/Icons.css'
+import './styles/Dropdowns.css'
 import { Route, Router, Navigate } from "@solidjs/router";
 import { UserProvider } from './UserContext.tsx';
 import ProtectedRoute from './ProtectedRoute.tsx';

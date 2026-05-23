@@ -1,4 +1,5 @@
-import './Login.css';
+import './styles/Login.css';
+import './translations/Login.json';
 import { createRenderEffect, createSignal, Show } from 'solid-js';
 import { useNavigate } from "@solidjs/router"
 import { type ValueCheck } from './helpers/helpersTypes.ts';

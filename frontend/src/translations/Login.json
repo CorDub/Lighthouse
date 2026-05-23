@@ -1,0 +1,17 @@
+{
+  "en": {
+    "google": "Connect with Google",
+    "or": "or",
+    "inputEmail": "Enter email address",
+    "inputPassword": "Enter your password",
+    "submit": "Submit",
+    "forgottenPassword": "Forgotten password?"
+  },
+  "es": {
+    "google": "Iniciar sesión con Google",
+    "or": "o",
+    "inputEmail": "Ingresa correo",
+    "inputPassword": "Ingresa contraseña",
+    "forgottenPassword": "¿Olvidó su contraseña?"
+  }
+}

@@ -1,0 +1,33 @@
+.dd-outclickcatcher {
+  position: fixed;
+  z-index: 1;
+  inset: 0;
+}
+
+.dropdown {
+  z-index: 2;
+  position: fixed;
+}
+
+.black-dropdown {
+  background-color: var(--pale-grey);
+  color: var(--black);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  gap: 0.25rem;
+  padding:0.25rem;
+  transform-origin: top right;
+  transform: scale(0);
+  opacity: 0;
+  transition: 
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.black-dropdown.open {
+  transform: scale(1);
+  opacity: 1;
+}
