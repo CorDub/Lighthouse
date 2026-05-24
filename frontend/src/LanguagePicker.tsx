@@ -32,7 +32,7 @@ function LanguagePicker() {
           return
         }
 
-        const response = await fetch(`${BASE_URL}/api/users/${user()?.id}`, {
+        const response = await fetch(`${BASE_URL}/api/users/${user()?.id}/language`, {
           method: "POST",
           credentials: "include",
           headers: {"Content-Type": "application/json"},
@@ -65,7 +65,7 @@ function LanguagePicker() {
       <button
         class="black-button clickable"
         onClick={(e) => openLanguagePickerDropdown(e)}>
-        {lang()}  
+        {lang()}
       </button>
       <Portal>
         <Dropdown

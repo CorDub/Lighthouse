@@ -91,7 +91,7 @@ func main() {
 
 	//protected
 	mux.Handle("GET /api/users", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.GetUsers)))
-	mux.Handle("PATCH /api/users", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.UpdateUser)))
+	mux.Handle("PATCH /api/users/{id}/language", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.UpdateUserLanguage)))
 
 	handler := middleware.Cors(apiCfg.Env, mux)
 

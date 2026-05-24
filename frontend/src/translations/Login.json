@@ -1,17 +1,22 @@
 {
-  "en": {
-    "google": "Connect with Google",
-    "or": "or",
-    "inputEmail": "Enter email address",
-    "inputPassword": "Enter your password",
-    "submit": "Submit",
-    "forgottenPassword": "Forgotten password?"
+  "google": {
+    "en": "Connect with Google",
+    "es": "Iniciar sesión o registrarse con Google"
   },
-  "es": {
-    "google": "Iniciar sesión con Google",
-    "or": "o",
-    "inputEmail": "Ingresa correo",
-    "inputPassword": "Ingresa contraseña",
-    "forgottenPassword": "¿Olvidó su contraseña?"
+  "or": {
+    "en": "or",
+    "es": "o"
+  },
+  "inputEmail": {
+    "en": "Enter email address",
+    "es": "Ingresa correo"
+  },
+  "inputPassword": {
+    "en": "Enter password",
+    "es": "Ingresa contraseña"
+  },
+  "forgottenPassword": {
+    "en": "Forgotten password?",
+    "es": "¿Olvidó su contraseña?"
   }
 }

@@ -1,6 +1,6 @@
 import './styles/Login.css';
-import './translations/Login.json';
-import { createRenderEffect, createSignal, Show } from 'solid-js';
+import loginText from './translations/Login.json';
+import { createEffect, createRenderEffect, createSignal, Show } from 'solid-js';
 import { useNavigate } from "@solidjs/router"
 import { type ValueCheck } from './helpers/helpersTypes.ts';
 import Navbar from "./Navbar.tsx"
@@ -11,6 +11,8 @@ import { useUser } from "./UserContext.tsx"
 import { UserSchema } from "./schemas/user.ts";
 import { checkForErrors } from "./helpers/checkForErrors.ts";
 import { BASE_URL } from './helpers/config.ts';
+import Text from "./Text.tsx";
+import type { TextValues } from './Text.tsx';
 
 function Login() {
   const [email, setEmail] = createSignal("");
@@ -18,6 +20,13 @@ function Login() {
   const [errors, setErrors] = createSignal<string[]>([]);
   const navigate = useNavigate();
   const { user, setUser } = useUser();
+  const [userLang, setUserLang] = createSignal("en");
+
+  createEffect(() => {
+    const userResolved = user()
+    const lang: keyof TextValues = userResolved?.language ?? "en"
+    setUserLang(lang)
+  })
 
   createRenderEffect(() => {
       if (user()) {
@@ -69,20 +78,20 @@ function Login() {
   return (
     <div class="login">
       <Navbar />
-      <form 
+      <form
         class="entry-form"
         onSubmit={(e) => submitForAuth(e)}>
 
         <div class="connect-google">
-          <button 
+          <button
             type="button"
             class="google-button clickable"
             onClick={redirectToGoogle}>
-            <svg 
-              width="25" 
-              height="25" 
-              viewBox="0 0 20 20" 
-              fill="none" 
+            <svg
+              width="25"
+              height="25"
+              viewBox="0 0 20 20"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_9_516)">
                 <path d="M19.8052 10.2304C19.8052 9.55059 19.7501 8.86714 19.6325 8.19839H10.2002V12.0492H15.6016C15.3775 13.2912 14.6573 14.3898 13.6027 15.088V17.5866H16.8252C18.7176 15.8449 19.8052 13.2728 19.8052 10.2304Z" fill="#4285F4" data-sentry-element="path" data-sentry-source-file="GoogleIcon.tsx"></path>
@@ -91,27 +100,27 @@ function Login() {
                 </g>
                 <defs data-sentry-element="defs" data-sentry-source-file="GoogleIcon.tsx"><clipPath id="clip0_9_516" data-sentry-element="clipPath" data-sentry-source-file="GoogleIcon.tsx"><rect width="20" height="20" fill="white" data-sentry-element="rect" data-sentry-source-file="GoogleIcon.tsx"></rect></clipPath></defs>
                 </svg>
-            <p class="google-button-text">Connect with Google</p>
+            <p class="google-button-text"><Text value={loginText.google}></Text></p>
           </button>
         </div>
 
         <div class="or">
-          <p style="font-size:14px">or</p>
+          <p style="font-size:14px"><Text value={loginText.or}/></p>
         </div>
 
         <div class="login-password">
           <div class="form-line">
-            <TextInput 
+            <TextInput
               errors={errors()}
               errorsSetFn={setErrors}
               value={email()}
               valueSetFn={setEmail}
-              placeholder="Enter email address"
+              placeholder={<Text value={loginText.inputEmail} strReturn={true}/>}
               autofocus={true}/>
           </div>
           <div class="form-line"
             style={{"margin-bottom": "0.75rem"}}>
-            <PasswordInput 
+            <PasswordInput
               errors={errors()}
               errorsSetFn={setErrors}
               value={password()}
@@ -119,12 +128,12 @@ function Login() {
           </div>
 
           <Show when={errors().length > 0} >
-            <Errors 
+            <Errors
               errors={errors()}
               margin={{marginBottom: 0}}/>
           </Show>
 
-          <button 
+          <button
             type="submit"
             class="green-button clickable"
             onClick={(e) => submitForAuth(e)}>
@@ -134,7 +143,7 @@ function Login() {
       </form>
 
       <div class="lost-password">
-        <a 
+        <a
           class="subdued-link"
           onClick={() => navigate("/forgottenPassword")}>
             Forgotten password?

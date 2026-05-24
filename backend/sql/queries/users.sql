@@ -32,3 +32,9 @@ WHERE id = $1;
 -- name: GetUsers :many
 SELECT *
 FROM users;
+
+-- name: UpdateUserLanguage :exec
+UPDATE users
+SET updated_at = NOW(),
+  language = $2
+WHERE id = $1;
