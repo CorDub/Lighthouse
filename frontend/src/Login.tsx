@@ -12,7 +12,8 @@ import { UserSchema } from "./schemas/user.ts";
 import { checkForErrors } from "./helpers/checkForErrors.ts";
 import { BASE_URL } from './helpers/config.ts';
 import Text from "./Text.tsx";
-import type { TextValues } from './Text.tsx';
+
+import { getText } from './helpers/getText.ts';
 
 function Login() {
   const [email, setEmail] = createSignal("");
@@ -20,18 +21,21 @@ function Login() {
   const [errors, setErrors] = createSignal<string[]>([]);
   const navigate = useNavigate();
   const { user, setUser } = useUser();
-  const [userLang, setUserLang] = createSignal("en");
+  const [lang, setLang] = createSignal<"en" | "es">("en");
 
-  createEffect(() => {
-    const userResolved = user()
-    const lang: keyof TextValues = userResolved?.language ?? "en"
-    setUserLang(lang)
+  // navigate home directly without logging in if a user is found
+  createRenderEffect(() => {
+    if (user()) {
+      navigate("/home", {replace: true})
+    }
   })
 
-  createRenderEffect(() => {
-      if (user()) {
-        navigate("/home", {replace: true})
-      }
+  //change language on user logging in 
+  createEffect(() => {
+    const loggedInLanguage = user()?.language;
+    if (loggedInLanguage) {
+      setLang(loggedInLanguage)
+    }
   })
 
   async function submitForAuth(e: Event) {
@@ -77,7 +81,7 @@ function Login() {
 
   return (
     <div class="login">
-      <Navbar />
+      <Navbar lang={lang()} setLang={setLang}/>
       <form
         class="entry-form"
         onSubmit={(e) => submitForAuth(e)}>
@@ -100,12 +104,12 @@ function Login() {
                 </g>
                 <defs data-sentry-element="defs" data-sentry-source-file="GoogleIcon.tsx"><clipPath id="clip0_9_516" data-sentry-element="clipPath" data-sentry-source-file="GoogleIcon.tsx"><rect width="20" height="20" fill="white" data-sentry-element="rect" data-sentry-source-file="GoogleIcon.tsx"></rect></clipPath></defs>
                 </svg>
-            <p class="google-button-text"><Text value={loginText.google}></Text></p>
+            <p class="google-button-text"><Text value={loginText.google} lang={lang()}/></p>
           </button>
         </div>
 
         <div class="or">
-          <p style="font-size:14px"><Text value={loginText.or}/></p>
+          <p style="font-size:14px"><Text value={loginText.or} lang={lang()}/></p>
         </div>
 
         <div class="login-password">
@@ -115,7 +119,7 @@ function Login() {
               errorsSetFn={setErrors}
               value={email()}
               valueSetFn={setEmail}
-              placeholder={<Text value={loginText.inputEmail} strReturn={true}/>}
+              placeholder={getText(loginText.inputEmail, lang())}
               autofocus={true}/>
           </div>
           <div class="form-line"
@@ -124,7 +128,8 @@ function Login() {
               errors={errors()}
               errorsSetFn={setErrors}
               value={password()}
-              valueSetFn={setPassword}/>
+              valueSetFn={setPassword}
+              placeholder={getText(loginText.inputPassword, lang())}/>
           </div>
 
           <Show when={errors().length > 0} >
@@ -137,7 +142,7 @@ function Login() {
             type="submit"
             class="green-button clickable"
             onClick={(e) => submitForAuth(e)}>
-              Submit
+              <Text value={loginText.submit} lang={lang()} />
           </button>
         </div>
       </form>
@@ -146,7 +151,7 @@ function Login() {
         <a
           class="subdued-link"
           onClick={() => navigate("/forgottenPassword")}>
-            Forgotten password?
+            <Text value={loginText.forgottenPassword} lang={lang()}/>
         </a>
       </div>
 

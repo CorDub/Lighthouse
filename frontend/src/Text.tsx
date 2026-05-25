@@ -1,5 +1,3 @@
-import { useUser } from "./UserContext"
-
 export type TextValues = {
   "en": string,
   "es": string
@@ -7,20 +5,12 @@ export type TextValues = {
 
 type TextProps = {
   value: TextValues,
-  strReturn?: boolean
+  lang: "en" | "es"
 }
 
 function Text(props: TextProps) {
-  const { user } = useUser()
-  const userResolved = user()
-  const lang: keyof TextValues = userResolved?.language ?? "en"
-
-  if (props.strReturn) {
-    return props.value[lang]
-  }
-
   return(
-    <p>{props.value[lang]}</p>
+    <>{props.value[props.lang]}</>
   )
 }
 
