@@ -5,7 +5,12 @@ import { useUser } from "./UserContext";
 import { BASE_URL } from "./helpers/config.ts";
 import LanguagePicker from "./LanguagePicker.tsx";
 
-function Navbar() {
+type NavbarProps = {
+  lang: "en" | "es";
+  setLang: (lang: "en" | "es") => void;
+}
+
+function Navbar(props: NavbarProps) {
   const navigate = useNavigate()
   const { user, setUser } = useUser();
 
@@ -32,7 +37,7 @@ function Navbar() {
         </a>
       </div>
       <div class="nav-right">
-        <LanguagePicker />
+        <LanguagePicker lang={props.lang} setLang={props.setLang}/>
         <Show when={user()}>
           <div class="nav-logout">
             <button 

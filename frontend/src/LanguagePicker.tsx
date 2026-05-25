@@ -4,8 +4,12 @@ import Dropdown from "./Dropdown.tsx";
 import { BASE_URL } from "./helpers/config.ts";
 import { useUser } from "./UserContext.tsx";
 
-function LanguagePicker() {
-  const [lang, setLang] = createSignal("EN")
+type LanguagePickerProps = {
+  lang: "en" | "es";
+  setLang: (lang: "en" | "es") => void;
+}
+
+function LanguagePicker(props: LanguagePickerProps) {
   const [isDropdownOpen, setDropDownOpen] = createSignal(false)
   const [anchor, setAnchor] = createSignal({})
   const [isClassOpenAdded, setClassOpenAdded] = createSignal(false)
@@ -22,9 +26,9 @@ function LanguagePicker() {
     setTimeout(() => setDropDownOpen(false), 250)
   }
 
-  async function changeLanguage(langCode: string) {
-    const newPreferredLanguage = lang() !== langCode
-    setLang(langCode)
+  async function changeLanguage(langCode: "en" | "es") {
+    const newPreferredLanguage = props.lang !== langCode
+    props.setLang(langCode)
     closeDropDown()
     if (newPreferredLanguage) {
       try {
@@ -65,7 +69,7 @@ function LanguagePicker() {
       <button
         class="black-button clickable"
         onClick={(e) => openLanguagePickerDropdown(e)}>
-        {lang()}
+        {props.lang.toUpperCase()}
       </button>
       <Portal>
         <Dropdown
@@ -75,9 +79,9 @@ function LanguagePicker() {
             <div class="black-dropdown"
               classList={{"open" : isClassOpenAdded()}}>
               <button class="grey-button clickable"
-                onClick={() => changeLanguage("EN")}>EN</button>
+                onClick={() => changeLanguage("en")}>EN</button>
               <button class="grey-button clickable"
-                onClick={() => changeLanguage("ES")}>ES</button>
+                onClick={() => changeLanguage("es")}>ES</button>
             </div>
         </Dropdown>
       </Portal>

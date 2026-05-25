@@ -1,7 +1,7 @@
 {
   "google": {
     "en": "Connect with Google",
-    "es": "Iniciar sesión o registrarse con Google"
+    "es": "Conecta con Google"
   },
   "or": {
     "en": "or",
@@ -14,6 +14,10 @@
   "inputPassword": {
     "en": "Enter password",
     "es": "Ingresa contraseña"
+  },
+  "submit": {
+    "en": "Submit",
+    "es": "Continuar"
   },
   "forgottenPassword": {
     "en": "Forgotten password?",
