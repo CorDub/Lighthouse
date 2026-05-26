@@ -1,11 +1,10 @@
-export type TextValues = {
-  "en": string,
-  "es": string
-}
+export type LanguageCode = "en" | "es"
+
+export type TextValues = Record<LanguageCode, string>
 
 type TextProps = {
   value: TextValues,
-  lang: "en" | "es"
+  lang: LanguageCode
 }
 
 function Text(props: TextProps) {

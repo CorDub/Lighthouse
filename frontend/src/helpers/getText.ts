@@ -1,8 +1,5 @@
-type TextValues = {
-  "en": string,
-  "es": string
-}
+import type { LanguageCode, TextValues } from "../Text"
 
-export function getText(textValue: TextValues, langCode: "en" | "es"): string {
+export function getText(textValue: TextValues, langCode: LanguageCode): string {
   return textValue[langCode]
 } 
