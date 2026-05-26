@@ -35,7 +35,7 @@ func (apiCfg *ApiConfig) UpdateUserLanguage (w http.ResponseWriter, r *http.Requ
 
 	errUpdate := apiCfg.DB.UpdateUserLanguage(r.Context(), params)
 	if errUpdate != nil {
-		RespondWithError(w, http.StatusInternalServerError, "Could not updqte the user", err)
+		RespondWithError(w, http.StatusInternalServerError, "Could not update the user", err)
 		return
 	}
 
