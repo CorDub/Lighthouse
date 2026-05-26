@@ -4,10 +4,11 @@ import { useNavigate } from "@solidjs/router";
 import { useUser } from "./UserContext";
 import { BASE_URL } from "./helpers/config.ts";
 import LanguagePicker from "./LanguagePicker.tsx";
+import type { LanguageCode } from "./Text.tsx";
 
 type NavbarProps = {
-  lang: "en" | "es";
-  setLang: (lang: "en" | "es") => void;
+  lang: LanguageCode;
+  setLang: (lang: LanguageCode) => void;
 }
 
 function Navbar(props: NavbarProps) {

@@ -12,7 +12,7 @@ import { UserSchema } from "./schemas/user.ts";
 import { checkForErrors } from "./helpers/checkForErrors.ts";
 import { BASE_URL } from './helpers/config.ts';
 import Text from "./Text.tsx";
-
+import type { LanguageCode } from "./Text.tsx";
 import { getText } from './helpers/getText.ts';
 
 function Login() {
@@ -21,7 +21,7 @@ function Login() {
   const [errors, setErrors] = createSignal<string[]>([]);
   const navigate = useNavigate();
   const { user, setUser } = useUser();
-  const [lang, setLang] = createSignal<"en" | "es">("en");
+  const [lang, setLang] = createSignal<LanguageCode>("en");
 
   // navigate home directly without logging in if a user is found
   createRenderEffect(() => {

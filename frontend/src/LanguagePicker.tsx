@@ -3,10 +3,11 @@ import { Portal } from "solid-js/web";
 import Dropdown from "./Dropdown.tsx";
 import { BASE_URL } from "./helpers/config.ts";
 import { useUser } from "./UserContext.tsx";
+import type { LanguageCode } from "./Text.tsx";
 
 type LanguagePickerProps = {
-  lang: "en" | "es";
-  setLang: (lang: "en" | "es") => void;
+  lang: LanguageCode;
+  setLang: (lang: LanguageCode) => void;
 }
 
 function LanguagePicker(props: LanguagePickerProps) {
@@ -26,7 +27,7 @@ function LanguagePicker(props: LanguagePickerProps) {
     setTimeout(() => setDropDownOpen(false), 250)
   }
 
-  async function changeLanguage(langCode: "en" | "es") {
+  async function changeLanguage(langCode: LanguageCode) {
     const newPreferredLanguage = props.lang !== langCode
     props.setLang(langCode)
     closeDropDown()
