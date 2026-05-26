@@ -1,11 +1,15 @@
 import { type ValueCheck } from "./helpersTypes.ts"
 import { UserSchema } from "../schemas/user.ts"
+import errorsText from "../translations/Errors.json";
 
+// types
+
+export type ErrorKey = keyof typeof errorsText;
 
 // final functions
 
-export function checkForErrors(...checks: ValueCheck[]): string[] {
-  const finalErrorList: string[] = []
+export function checkForErrors(...checks: ValueCheck[]): ErrorKey[] {
+  const finalErrorList: ErrorKey[] = []
 
   for (const check of checks) {
     const res = singleCheckForError(check)
@@ -15,7 +19,7 @@ export function checkForErrors(...checks: ValueCheck[]): string[] {
   return finalErrorList
 }
 
-function singleCheckForError(check: ValueCheck): string[] {
+function singleCheckForError(check: ValueCheck): ErrorKey[] {
   const checkFunctionsTable = {
     "email": checkEmail,
     "password": checkPassword
@@ -28,45 +32,45 @@ function singleCheckForError(check: ValueCheck): string[] {
 
 // brick functions
 
-function checkEmail(value: string): string[] {
-  let errorList: string[] = []
+function checkEmail(value: string): ErrorKey[] {
+  let errorList: ErrorKey[] = []
 
   const present = checkRequired(value)
   if (!present) {
-    errorList.push("Email is required")
+    errorList.push("emailRequired")
     return errorList
   }
 
   const emailValid = checkEmailValid(value)
   if (!emailValid) {
-    errorList.push("Email is not valid")
+    errorList.push("emailValid")
   }
 
   const notTooLong = checkMax(value, 254)
   if (!notTooLong) {
-    errorList.push("Email is too long - max 254 charcaters")
+    errorList.push("emailTooLong")
   }
 
   return errorList
 }
 
-function checkPassword(value: string): string[] {
-  let errorList: string[] = []
+function checkPassword(value: string): ErrorKey[] {
+  let errorList: ErrorKey[] = []
 
   const present = checkRequired(value)
   if (!present) {
-    errorList.push("Password is required")
+    errorList.push("passwordRequired")
     return errorList
   }
 
   const notTooShort = checkMin(value, 8)
   if (!notTooShort) {
-    errorList.push("Password is too short - min 8 characters")
+    errorList.push("passwordTooShort")
   }
 
   const notTooLong = checkMax(value, 72)
   if (!notTooLong) {
-    errorList.push("Password is too long - max 72 characters")
+    errorList.push("passwordTooLong")
   }
 
   return errorList

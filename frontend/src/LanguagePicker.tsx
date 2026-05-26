@@ -4,17 +4,14 @@ import Dropdown from "./Dropdown.tsx";
 import { BASE_URL } from "./helpers/config.ts";
 import { useUser } from "./UserContext.tsx";
 import type { LanguageCode } from "./Text.tsx";
+import { useDefaults } from "./DefaultsContext.tsx";
 
-type LanguagePickerProps = {
-  lang: LanguageCode;
-  setLang: (lang: LanguageCode) => void;
-}
-
-function LanguagePicker(props: LanguagePickerProps) {
+function LanguagePicker() {
   const [isDropdownOpen, setDropDownOpen] = createSignal(false)
   const [anchor, setAnchor] = createSignal({})
   const [isClassOpenAdded, setClassOpenAdded] = createSignal(false)
   const { user } = useUser()
+  const { defaults, setDefaults } = useDefaults()
 
   function openLanguagePickerDropdown(e: MouseEvent) {
     const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
@@ -28,8 +25,13 @@ function LanguagePicker(props: LanguagePickerProps) {
   }
 
   async function changeLanguage(langCode: LanguageCode) {
-    const newPreferredLanguage = props.lang !== langCode
-    props.setLang(langCode)
+    const newPreferredLanguage = defaults().lang !== langCode
+    setDefaults(prev => ({
+      ...prev,
+      lang: langCode
+    }))
+    console.log("langCode", langCode)
+    console.log("defaults.language", defaults().lang)
     closeDropDown()
     if (newPreferredLanguage) {
       try {
@@ -70,7 +72,7 @@ function LanguagePicker(props: LanguagePickerProps) {
       <button
         class="black-button clickable"
         onClick={(e) => openLanguagePickerDropdown(e)}>
-        {props.lang.toUpperCase()}
+        {defaults().lang.toUpperCase()}
       </button>
       <Portal>
         <Dropdown

@@ -1,0 +1,26 @@
+{
+  "emailRequired": {
+    "en": "Email is required",
+    "es": "Correo requerido"
+  }, 
+  "emailValid": {
+    "en": "Email is not valid",
+    "es": "Correo no valido"
+  },
+  "emailTooLong": {
+    "en": "Email is too long - max 254 characters",
+    "es": "Correo demasiado largo - max 254 caracteres"
+  },
+  "passwordRequired": {
+    "en": "Password is required",
+    "es": "Contraseña requerida"
+  },
+  "passwordTooShort": {
+    "en": "Password is too short - min 8 characters",
+    "es": "Contraseña demasiada corta - min 8 caracteres"
+  },
+  "passwordTooLong": {
+    "en": "Password is too long - max 72 characters",
+    "es": "Contraseña demasiada larga - max 72 caracteres"
+  }
+}

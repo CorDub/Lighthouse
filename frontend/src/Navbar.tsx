@@ -4,14 +4,8 @@ import { useNavigate } from "@solidjs/router";
 import { useUser } from "./UserContext";
 import { BASE_URL } from "./helpers/config.ts";
 import LanguagePicker from "./LanguagePicker.tsx";
-import type { LanguageCode } from "./Text.tsx";
 
-type NavbarProps = {
-  lang: LanguageCode;
-  setLang: (lang: LanguageCode) => void;
-}
-
-function Navbar(props: NavbarProps) {
+function Navbar() {
   const navigate = useNavigate()
   const { user, setUser } = useUser();
 
@@ -38,7 +32,7 @@ function Navbar(props: NavbarProps) {
         </a>
       </div>
       <div class="nav-right">
-        <LanguagePicker lang={props.lang} setLang={props.setLang}/>
+        <LanguagePicker />
         <Show when={user()}>
           <div class="nav-logout">
             <button 
