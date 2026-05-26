@@ -1,5 +1,9 @@
-import "./Errors.css"
-import { For, mergeProps } from "solid-js"
+import "./styles/Errors.css";
+import { For, mergeProps } from "solid-js";
+import { useDefaults } from "./DefaultsContext.tsx";
+import Text from "./Text.tsx";
+import errorsText from "./translations/Errors.json";
+import { type ErrorKey } from "./helpers/checkForErrors.ts";
 
 type MarginProp = {
   marginTop?: number,
@@ -7,27 +11,28 @@ type MarginProp = {
 }
 
 type ErrorsProps = {
-  errors: string[],
+  errors: ErrorKey[],
   margin?: MarginProp
 }
 
 function Errors(props: ErrorsProps) {
-  const defaults = mergeProps({
+  const errorDefaults = mergeProps({
     margin: {
       marginBottom: 0.5,
       marginTop: 0.5
     }
   }, props)
+  const { defaults } = useDefaults();
 
   return (
     <div class="error"
       style={{
-        "margin-top": `${defaults.margin.marginTop}rem`,
-        "margin-bottom": `${defaults.margin.marginBottom}rem`
+        "margin-top": `${errorDefaults.margin.marginTop}rem`,
+        "margin-bottom": `${errorDefaults.margin.marginBottom}rem`
       }}>
       <For each={props.errors}>
         {(error, _) => 
-          <p class="error-text">{error}</p>
+          <p class="error-text"><Text value={errorsText[error]} lang={defaults().lang}/></p>
         }
       </For>
     </div>

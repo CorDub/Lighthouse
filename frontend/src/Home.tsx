@@ -1,9 +1,13 @@
 import { createSignal, Show, For } from "solid-js"
 import Navbar from "./Navbar.tsx"
 import { BASE_URL } from "./helpers/config.ts";
+import Text from "./Text.tsx";
+import { useDefaults } from "./DefaultsContext.tsx";
+import homeText from "./translations/Home.json";
 
 function Home () {
   const [users, setUsers] = createSignal(null);
+  const { defaults } = useDefaults();
 
   async function fetchUsers() {
     const response = await fetch(`${BASE_URL}/api/users`, {
@@ -21,11 +25,16 @@ function Home () {
   return (
     <div class="home">
       <Navbar />
-      <p>Yes this is home</p>
+      <p><Text
+          value={homeText.welcome} 
+          lang={defaults().lang}/>
+      </p>
       <button 
         class='accept-button clickable'
         onClick={fetchUsers}>
-        Fetch users
+        <Text
+          value={homeText.fetchButton} 
+          lang={defaults().lang}/>
       </button>
       <Show
         when={users()}
@@ -36,7 +45,9 @@ function Home () {
         <button 
           class="accept-button clickable"
           onClick={() => setUsers(null)}>
-          Clear
+          <Text
+            value={homeText.clear} 
+            lang={defaults().lang}/>
         </button>
       </Show>
     </div>

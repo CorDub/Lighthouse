@@ -13,7 +13,7 @@ type UserContext = {
   setUser: (u: User) => void;
 }
 
-export const UserContext = createContext<UserContext>();
+const UserContext = createContext<UserContext>();
 
 export function UserProvider(props: ParentProps) {
   const [user, setUser] = createSignal<User>(null);

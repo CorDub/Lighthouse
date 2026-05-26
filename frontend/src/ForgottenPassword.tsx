@@ -1,4 +1,4 @@
-import "./ForgottenPassword.css";
+import "./styles/ForgottenPassword.css";
 import { createSignal, Show } from "solid-js";
 import { type ValueCheck } from "./helpers/helpersTypes.ts";
 import Navbar from "./Navbar";
@@ -6,11 +6,17 @@ import Errors from "./Errors.tsx";
 import TextInput from "./TextInput.tsx";
 import { checkForErrors } from "./helpers/checkForErrors.ts";
 import { BASE_URL } from "./helpers/config.ts";
+import { type ErrorKey } from "./helpers/checkForErrors.ts";
+import Text from "./Text.tsx";
+import forpasText from "./translations/ForgottenPassword.json";
+import { useDefaults } from "./DefaultsContext.tsx";
+import { getText } from "./helpers/getText.ts";
 
 function ForgottenPassword() {
   const [email, setEmail] = createSignal("")
   const [resetAccepted, setResetAccepted] = createSignal(false)
-  const [errors, setErrors] = createSignal<string[]>([]);
+  const [errors, setErrors] = createSignal<ErrorKey[]>([]);
+  const { defaults } = useDefaults()
 
   async function resetPassword(e: Event) {
     try {
@@ -49,7 +55,12 @@ function ForgottenPassword() {
       <Navbar/>
       <Show when={resetAccepted()}>
         <div>
-          <p>{`A reset email has been sent to ${email()}`}</p>
+          <p>
+            <Text 
+              value={forpasText.resetEmailSent} 
+              lang={defaults().lang}
+              var={[email()]}/>
+          </p>
         </div>
       </Show>
       <Show when={!resetAccepted()}>
@@ -61,14 +72,16 @@ function ForgottenPassword() {
             errorsSetFn={setErrors}
             value={email()}
             valueSetFn={setEmail}
-            placeholder="Enter email address"/>
+            placeholder={getText(forpasText.passwordInput, defaults().lang)}/>
 
           <Errors errors={errors()}/>
 
           <button 
             class="green-button clickable"
             onClick={(e) => resetPassword(e)}>
-              Submit
+              <Text 
+                value={forpasText.submit}
+                lang={defaults().lang}/>
           </button>
         </form>
       </Show>

@@ -1,0 +1,14 @@
+{
+  "welcome": {
+    "en": "Yes this is home",
+    "es": "Aquí estamos en casa"
+  },
+  "fetchButton": {
+    "en": "Fetch users",
+    "es": "Diles a los amigos de venir"
+  },
+  "clear": {
+    "en": "Clear",
+    "es": "Ya vayanse"
+  }
+}

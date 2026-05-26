@@ -1,5 +1,8 @@
-import "./PasswordInput.css"
+import "./styles/PasswordInput.css";
 import { createEffect, mergeProps, createSignal } from "solid-js";
+import { getText } from "./helpers/getText";
+import pasinText from "./translations/PasswordInput.json";
+import { useDefaults } from "./DefaultsContext";
 
 type PasswordInputProps = {
   errors: string[],
@@ -11,11 +14,12 @@ type PasswordInputProps = {
 }
 
 function PasswordInput(props: PasswordInputProps) {
-  const defaults = mergeProps({
-    placeholder: "Enter your password",
+  const [visible, setVisible] = createSignal(false)
+  const { defaults } = useDefaults()
+  const pasinDefaults = mergeProps({
+    placeholder: getText(pasinText.placeholder, defaults().lang),
     autofocus: false
   }, props)
-  const [visible, setVisible] = createSignal(false)
 
   //autofocus
   let inputRef: HTMLInputElement | undefined
@@ -35,7 +39,7 @@ function PasswordInput(props: PasswordInputProps) {
         onFocus={() => props.errorsSetFn([])}
         onInput={(e) => props.valueSetFn(e.target.value)}
         value={props.value}
-        placeholder={defaults.placeholder}/>
+        placeholder={pasinDefaults.placeholder}/>
       <div 
         class="icon password-icon clickable"
         onClick={() => setVisible(!visible())}>
