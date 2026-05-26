@@ -5,6 +5,7 @@ USERS
 	  email TEXT NOT NULL UNIQUE
 		hashed_password TEXT
 		language TEXT NOT NULL DEFAULT 'en'
+			users_language_check CHECK (language IN ('en' 'es'))
 
 REFRESH_TOKENS
 	  token TEXT PRIMARY KEY

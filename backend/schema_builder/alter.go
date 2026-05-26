@@ -54,6 +54,9 @@ func parseAlterTable(lines []string, results [][]string, name string) ([]string,
 				if err != nil {
 					log.Fatalf("Could not alter column")
 				}
+
+			case "ADD CONSTRAINT":
+				model = addConstraint(line, model)
 		}
 	}
 
@@ -132,6 +135,18 @@ func updateColumn(line string, model []string) ([]string, error) {
 	}
 	
 	return []string{}, fmt.Errorf("Could not update the column")
+}
+
+
+func addConstraint(line string, model []string) []string {
+	printV("line", line)
+	printV("model", model)
+
+	lineSplit := strings.Split(line, " ")
+	lineToAdd := strings.Join(lineSplit[2:], " ")
+	tabbed := "\t\t\t" + lineToAdd
+	updatedModel := append(model, tabbed)
+	return updatedModel
 }
 
 

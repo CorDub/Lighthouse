@@ -30,8 +30,6 @@ function LanguagePicker() {
       ...prev,
       lang: langCode
     }))
-    console.log("langCode", langCode)
-    console.log("defaults.language", defaults().lang)
     closeDropDown()
     if (newPreferredLanguage) {
       try {
@@ -40,7 +38,7 @@ function LanguagePicker() {
         }
 
         const response = await fetch(`${BASE_URL}/api/users/${user()?.id}/language`, {
-          method: "POST",
+          method: "PATCH",
           credentials: "include",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
