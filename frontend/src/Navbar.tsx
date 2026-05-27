@@ -4,10 +4,14 @@ import { useNavigate } from "@solidjs/router";
 import { useUser } from "./UserContext";
 import { BASE_URL } from "./helpers/config.ts";
 import LanguagePicker from "./LanguagePicker.tsx";
+import Text from "./Text.tsx";
+import { useDefaults } from "./DefaultsContext.tsx";
+import navbarText from "./translations/Navbar.json";
 
 function Navbar() {
   const navigate = useNavigate()
   const { user, setUser } = useUser();
+  const { defaults } = useDefaults();
 
   async function logout() {
     const response = await fetch(`${BASE_URL}/api/logout`, {
@@ -38,7 +42,9 @@ function Navbar() {
             <button 
               class="clickable white-button"
               onClick={logout}>
-                Logout
+                <Text 
+                  value={navbarText.logout}
+                  lang={defaults().lang}/>
               </button>
           </div>
         </Show>
