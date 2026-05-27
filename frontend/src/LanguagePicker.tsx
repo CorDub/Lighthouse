@@ -1,4 +1,4 @@
-import { createSignal, createEffect } from "solid-js";
+import { createSignal, createEffect, For } from "solid-js";
 import { Portal } from "solid-js/web";
 import Dropdown from "./Dropdown.tsx";
 import { BASE_URL } from "./helpers/config.ts";
@@ -6,6 +6,7 @@ import { useUser } from "./UserContext.tsx";
 import type { LanguageCode } from "./Text.tsx";
 import { useDefaults } from "./DefaultsContext.tsx";
 import Alert from "./Alert.tsx";
+import { LANGUAGE_CODES } from "./Text.tsx";
 
 function LanguagePicker() {
   const [isDropdownOpen, setDropDownOpen] = createSignal(false)
@@ -14,6 +15,25 @@ function LanguagePicker() {
   const { user } = useUser()
   const { defaults, setDefaults } = useDefaults()
   const [isAlertOpen, setAlertOpen] = createSignal(false)
+  const [languageCodesList, setLanguageCodeList] = createSignal<LanguageCode[]>([...LANGUAGE_CODES])
+
+  // change the order of the list to always have the currently chosen first
+  createEffect(() => {
+    if (defaults().lang == "en") {
+      return
+    }
+
+    let newOrderedList: LanguageCode[] = []
+    newOrderedList.push(defaults().lang)
+    for (const lang of languageCodesList()) {
+      if (newOrderedList.includes(lang)) {
+        continue
+      }
+      newOrderedList.push(lang)
+    }
+
+    setLanguageCodeList(newOrderedList)
+  })
 
   function openLanguagePickerDropdown(e: MouseEvent) {
     const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
@@ -80,10 +100,13 @@ function LanguagePicker() {
           anchor={anchor()}>
             <div class="black-dropdown"
               classList={{"open" : isClassOpenAdded()}}>
-              <button class="grey-button clickable"
-                onClick={() => changeLanguage("en")}>EN</button>
-              <button class="grey-button clickable"
-                onClick={() => changeLanguage("es")}>ES</button>
+              <For each={languageCodesList()}>
+                {(lang, _) => 
+                <button class="grey-button clickable"
+                  onClick={() => changeLanguage(lang)}>
+                  {lang.toUpperCase()}
+                </button>}
+              </For>
             </div>
         </Dropdown>
       </Portal>
