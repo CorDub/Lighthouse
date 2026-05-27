@@ -3,10 +3,12 @@ import { Portal } from "solid-js/web";
 import Dropdown from "./Dropdown.tsx";
 import { BASE_URL } from "./helpers/config.ts";
 import { useUser } from "./UserContext.tsx";
-import type { LanguageCode } from "./Text.tsx";
 import { useDefaults } from "./DefaultsContext.tsx";
 import Alert from "./Alert.tsx";
-import { LANGUAGE_CODES } from "./Text.tsx";
+import {
+  type LanguageCode,
+  LANGUAGE_CODES
+} from "./types/langTypes.ts";
 
 function LanguagePicker() {
   const [isDropdownOpen, setDropDownOpen] = createSignal(false)

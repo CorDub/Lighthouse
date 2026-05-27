@@ -1,9 +1,8 @@
 import { createMemo } from "solid-js";
-
-export const LANGUAGE_CODES = ["en", "es"] as const;
-export type LanguageCode = typeof LANGUAGE_CODES[number];
-
-export type TextValues = Record<LanguageCode, string>
+import { 
+  type TextValues,
+  type LanguageCode, 
+} from "./types/langTypes.ts";
 
 type TextProps = {
   value: TextValues,

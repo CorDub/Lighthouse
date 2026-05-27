@@ -1,12 +1,12 @@
 import "./styles/ForgottenPassword.css";
 import { createSignal, Show } from "solid-js";
-import { type ValueCheck } from "./helpers/helpersTypes.ts";
+import { type ValueCheck } from "./types/helpersTypes.ts";
 import Navbar from "./Navbar";
 import Errors from "./Errors.tsx";
 import TextInput from "./TextInput.tsx";
 import { checkForErrors } from "./helpers/checkForErrors.ts";
 import { BASE_URL } from "./helpers/config.ts";
-import { type ErrorKey } from "./helpers/checkForErrors.ts";
+import { type ErrorKey } from "./Errors.tsx";
 import Text from "./Text.tsx";
 import forpasText from "./translations/ForgottenPassword.json";
 import { useDefaults } from "./DefaultsContext.tsx";
