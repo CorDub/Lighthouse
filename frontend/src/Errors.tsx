@@ -3,7 +3,8 @@ import { For, mergeProps } from "solid-js";
 import { useDefaults } from "./DefaultsContext.tsx";
 import Text from "./Text.tsx";
 import errorsText from "./translations/Errors.json";
-import { type ErrorKey } from "./helpers/checkForErrors.ts";
+
+export type ErrorKey = keyof typeof errorsText;
 
 type MarginProp = {
   marginTop?: number,

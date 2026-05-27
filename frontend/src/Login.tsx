@@ -2,7 +2,7 @@ import './styles/Login.css';
 import loginText from './translations/Login.json';
 import { createEffect, createRenderEffect, createSignal, Show } from 'solid-js';
 import { useNavigate } from "@solidjs/router"
-import { type ValueCheck } from './helpers/helpersTypes.ts';
+import { type ValueCheck } from './types/helpersTypes.ts';
 import Navbar from "./Navbar.tsx"
 import Errors from "./Errors.tsx"
 import TextInput from "./TextInput.tsx"
@@ -14,7 +14,7 @@ import { BASE_URL } from './helpers/config.ts';
 import Text from "./Text.tsx";
 import { getText } from './helpers/getText.ts';
 import { useDefaults } from "./DefaultsContext.tsx";
-import { type ErrorKey } from "./helpers/checkForErrors.ts";
+import { type ErrorKey } from "./Errors.tsx";
 
 function Login() {
   const [email, setEmail] = createSignal("");

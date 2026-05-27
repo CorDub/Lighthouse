@@ -1,10 +1,6 @@
-import { type ValueCheck } from "./helpersTypes.ts"
+import { type ValueCheck } from "../types/helpersTypes.ts"
 import { UserSchema } from "../schemas/user.ts"
-import errorsText from "../translations/Errors.json";
-
-// types
-
-export type ErrorKey = keyof typeof errorsText;
+import { type ErrorKey } from "../Errors.tsx";
 
 // final functions
 
