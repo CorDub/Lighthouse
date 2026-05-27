@@ -5,6 +5,7 @@ import { BASE_URL } from "./helpers/config.ts";
 import { useUser } from "./UserContext.tsx";
 import type { LanguageCode } from "./Text.tsx";
 import { useDefaults } from "./DefaultsContext.tsx";
+import Alert from "./Alert.tsx";
 
 function LanguagePicker() {
   const [isDropdownOpen, setDropDownOpen] = createSignal(false)
@@ -12,6 +13,7 @@ function LanguagePicker() {
   const [isClassOpenAdded, setClassOpenAdded] = createSignal(false)
   const { user } = useUser()
   const { defaults, setDefaults } = useDefaults()
+  const [isAlertOpen, setAlertOpen] = createSignal(false)
 
   function openLanguagePickerDropdown(e: MouseEvent) {
     const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
@@ -47,8 +49,7 @@ function LanguagePicker() {
         })
 
         if (response.ok) {
-          const data = await response.json()
-          console.log(data)
+          setAlertOpen(true)
         }
 
       } catch (error) {
@@ -86,6 +87,11 @@ function LanguagePicker() {
             </div>
         </Dropdown>
       </Portal>
+      <Alert 
+        message={"languageChanged"}
+        type={"confirmation"} 
+        alertOpen={isAlertOpen()}
+        setAlertOpen={setAlertOpen}/>
     </div>
   )
 }

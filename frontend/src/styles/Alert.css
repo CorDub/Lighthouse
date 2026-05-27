@@ -1,0 +1,28 @@
+.alert {
+  position: fixed;
+  z-index: 1;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: var(--black);
+  color: var(--light-green);
+  padding: 1rem;
+  border-radius: 15px;
+  transform: translateX(150%);
+  transition: transform 0.25s ease;
+}
+
+.alert.open {
+  transform: translateX(0);
+}
+
+.confirmation {
+  border: 2px solid var(--light-green)
+}
+
+.warning {
+  border: 2px solid var(--gold)
+}
+
+.error {
+  border: 2px solid var(--red)
+}
