@@ -40,11 +40,11 @@ func parseAlterTable(lines []string, results [][]string, name string) ([]string,
 		log.Fatalf("Could not find a model to alter: %s", err)
 	}
 
-	trimmedFirstLine := strings.TrimSpace(lines[0])
-	alteration := strings.Split(trimmedFirstLine, " ")
-	preciseAlteration := alteration[0] + " " + alteration[1]
-
 	for _, line := range lines {
+		trimmedFirstLine := strings.TrimSpace(line)
+		alteration := strings.Split(trimmedFirstLine, " ")
+		preciseAlteration := alteration[0] + " " + alteration[1]
+
 		switch preciseAlteration {
 			case "ADD COLUMN":
 				model = addColumn(line, model)
@@ -139,9 +139,6 @@ func updateColumn(line string, model []string) ([]string, error) {
 
 
 func addConstraint(line string, model []string) []string {
-	printV("line", line)
-	printV("model", model)
-
 	lineSplit := strings.Split(line, " ")
 	lineToAdd := strings.Join(lineSplit[2:], " ")
 	tabbed := "\t\t\t" + lineToAdd

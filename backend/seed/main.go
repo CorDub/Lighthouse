@@ -81,8 +81,12 @@ func main() {
 		Email: "jorge.subadmin@gmail.com",
 		Password: "YeahOK26!",
 	}
+	user4 := tentativeUser{
+		Email: "ruben@mtymedia.com",
+		Password: "VivaLosTokens",
+	}
 
-	userSlice := []tentativeUser{user1, user2, user3}
+	userSlice := []tentativeUser{user1, user2, user3, user4}
 
 	for _, user := range userSlice {
 		exitStr, err := seedUser(apiCfg, user.Email, user.Password)
