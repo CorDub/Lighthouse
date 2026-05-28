@@ -8,7 +8,6 @@ import (
 	"database/sql"
 	"time"
 
-	"Lighthouse/internal/database"
 	"github.com/google/uuid"
 )
 
@@ -36,6 +35,6 @@ type User struct {
 	UpdatedAt      time.Time
 	Email          string
 	HashedPassword sql.NullString
-	Language       database.Language
-	Role           database.Role
+	Language       Language
+	Role           Role
 }
