@@ -9,7 +9,6 @@ import (
 	"context"
 	"database/sql"
 
-	"Lighthouse/internal/database"
 	"github.com/google/uuid"
 )
 
@@ -30,8 +29,8 @@ RETURNING id, created_at, updated_at, email, hashed_password, language, role
 type CreateUserParams struct {
 	Email          string
 	HashedPassword sql.NullString
-	Language       database.Language
-	Role           database.Role
+	Language       Language
+	Role           Role
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -167,7 +166,7 @@ WHERE id = $1
 
 type UpdateUserLanguageParams struct {
 	ID       uuid.UUID
-	Language database.Language
+	Language Language
 }
 
 func (q *Queries) UpdateUserLanguage(ctx context.Context, arg UpdateUserLanguageParams) error {

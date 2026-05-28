@@ -11,7 +11,7 @@ import (
 func (apiCfg *ApiConfig) UpdateUserLanguage (w http.ResponseWriter, r *http.Request) {
 	//validate, decode body and get params
 	type Body struct {
-		Language string `json:"language" validate:"required,oneof=en es"`
+		Language database.Language `json:"language" validate:"required,oneof=en es"`
 	}
 	decodedBody := Body{}
 	err := decodeRequestBody(r, &decodedBody)

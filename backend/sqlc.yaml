@@ -8,10 +8,8 @@ sql:
         out: "internal/database"
         overrides:
           - column: "users.language"
-            go_type:
-              import: "Lighthouse/internal/database"
+            go_type: 
               type: "Language"
           - column: "users.role"
             go_type: 
-              import: "Lighthouse/internal/database"
               type: "Role"

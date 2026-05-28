@@ -5,6 +5,7 @@ import (
 	"time"
 	"log"
 
+	"Lighthouse/internal/database"
 	"github.com/google/uuid"
 )
 
@@ -13,8 +14,8 @@ type User struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	Email string `json:"email"`
-	Language string `json:"language"`
-	Role string `json:"role"`
+	Language database.Language `json:"language"`
+	Role database.Role `json:"role"`
 }
 
 type getUsersResponse struct {
