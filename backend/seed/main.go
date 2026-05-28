@@ -18,10 +18,17 @@ import (
 type tentativeUser struct{
 	Email string
 	Password string
+	Language database.Language
+	Role database.Role
 }
 
 
-func seedUser(apiCfg handlers.ApiConfig, email string, password string) (string, error) {
+func seedUser(
+	apiCfg handlers.ApiConfig, 
+	email string, 
+	password string,
+	language database.Language,
+	role database.Role) (string, error) {
 	hash, err := auth.HashPassword(password)
 	if err != nil {
 		log.Printf("Couldn't hash the password: %s", err)
@@ -34,6 +41,8 @@ func seedUser(apiCfg handlers.ApiConfig, email string, password string) (string,
 			String: hash,
 			Valid: true,
 		},
+		Language: language,
+		Role: role,
 	}
 
 	_, err2 := apiCfg.DB.CreateUser(context.Background(), params)
@@ -72,24 +81,32 @@ func main() {
 	user1 := tentativeUser{
 		Email: "corentindubois22@gmail.com",
 		Password: "CavemanSwing78!",
+		Language: "en",
+		Role: "visitor",
 	}
 	user2 := tentativeUser{
 		Email: "pedro.mcadmin@gmail.com",
 		Password: "ProperlyDone45!",
+		Language: "en",
+		Role: "visitor",
 	}
 	user3 := tentativeUser{
 		Email: "jorge.subadmin@gmail.com",
 		Password: "YeahOK26!",
+		Language: "en",
+		Role: "visitor",
 	}
 	user4 := tentativeUser{
-		Email: "ruben@mtymedia.com",
+		Email: "agency@agency.com",
 		Password: "VivaLosTokens",
+		Language: "es",
+		Role: "agency",
 	}
 
 	userSlice := []tentativeUser{user1, user2, user3, user4}
 
 	for _, user := range userSlice {
-		exitStr, err := seedUser(apiCfg, user.Email, user.Password)
+		exitStr, err := seedUser(apiCfg, user.Email, user.Password, user.Language, user.Role)
 		if err != nil {
 			log.Printf("Couldn't seed user with email %s", user.Email)
 			return

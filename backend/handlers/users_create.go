@@ -14,6 +14,8 @@ func (apiCfg *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Email string `json:"email" validate:"required,email,max=254"`
 		Password string `json:"password" validate:"required,min=8,max=72,printascii"`
+		Language database.Language `json:"language" validate:"omitempty,oneof=en es"`
+		Role database.Role `json:"role" validate:"omitempty,oneof=visitor brand agency creator"` 
 	}
 
 	//decode
@@ -26,8 +28,16 @@ func (apiCfg *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//normalize
-	strings.TrimSpace(params.Email)
-	strings.TrimSpace(params.Password)
+	params.Email = strings.TrimSpace(params.Email)
+	params.Password = strings.TrimSpace(params.Password)
+
+	//provide default values if nothing has been passed for optional fields
+	if (params.Language == "") {
+		params.Language = database.LanguageEN
+	}
+	if (params.Role == "") {
+		params.Role = database.RoleVisitor
+	}
 
 	//validate
 	errValidation := validate.Struct(params)
@@ -50,18 +60,15 @@ func (apiCfg *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	user, err := apiCfg.DB.CreateUser(r.Context(), createUserParams)
+	dbUser, err := apiCfg.DB.CreateUser(r.Context(), createUserParams)
 	if err != nil {
 		RespondWithError(w, http.StatusInternalServerError, "Couldn't create user", err)
 		return
 	}
 
+	handlersUser := dbUserToUser(dbUser)
+
 	RespondWithJSON(w, http.StatusCreated, createUserResponse{
-		User: User{
-			ID: user.ID,
-			CreatedAt: user.CreatedAt,
-			UpdatedAt: user.UpdatedAt,
-			Email: user.Email,
-		},
+		User: handlersUser,
 	})
 }
