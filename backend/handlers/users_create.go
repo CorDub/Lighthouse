@@ -5,9 +5,12 @@ import (
 	"strings"
 	"encoding/json"
 	"database/sql"
+	"errors"
 
 	"Lighthouse/internal/auth"
 	"Lighthouse/internal/database"
+
+	"github.com/lib/pq"
 )
 
 func (apiCfg *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -15,7 +18,7 @@ func (apiCfg *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
 		Email string `json:"email" validate:"required,email,max=254"`
 		Password string `json:"password" validate:"required,min=8,max=72,printascii"`
 		Language database.Language `json:"language" validate:"omitempty,oneof=en es"`
-		Role database.Role `json:"role" validate:"omitempty,oneof=visitor brand agency creator"` 
+		Role database.Role `json:"role" validate:"omitempty,oneof=visitor brand agency creator"`
 	}
 
 	//decode
@@ -62,6 +65,13 @@ func (apiCfg *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	dbUser, err := apiCfg.DB.CreateUser(r.Context(), createUserParams)
 	if err != nil {
+		// check if the issue is because of a previous account with the same email (email is unique)
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) && pqErr.Code == "23505" {
+			RespondWithError(w, http.StatusConflict, "Email taken", err)
+			return
+		}
+
 		RespondWithError(w, http.StatusInternalServerError, "Couldn't create user", err)
 		return
 	}
