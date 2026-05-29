@@ -26,6 +26,13 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//validate body
+	errValidation := validate.Struct(params)
+	if errValidation != nil {
+		RespondWithError(w, http.StatusBadRequest, "Invalid email or password", err)
+		return
+	}
+
 	// get user by email
 	user, err := apiCfg.DB.GetUserByEmail(r.Context(), params.Email)
 	if err != nil {
@@ -38,7 +45,7 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		RespondWithError(w, http.StatusUnauthorized, "incorrect email or password", err)
 		return
 	}
-	
+
 	// check password is correct
 	match, err := auth.CheckPasswordHash(params.Password, user.HashedPassword.String)
 	if err != nil || !match {
