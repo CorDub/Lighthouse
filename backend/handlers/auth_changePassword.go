@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+	"strings"
 
 	"Lighthouse/internal/auth"
 )
@@ -22,6 +23,10 @@ func (apiCfg *ApiConfig) ChangePassword(w http.ResponseWriter, r *http.Request) 
 		RespondWithError(w, http.StatusInternalServerError, "Unexpected server error", err)
 		return
 	}
+
+	//normalize
+	decodedBody.Password = strings.TrimSpace(decodedBody.Password)
+	decodedBody.Token = strings.TrimSpace(decodedBody.Token)
 
 	//check that the token is valid
 	dbToken, err := apiCfg.DB.GetMagicLinkTokenByToken(r.Context(), decodedBody.Token)
@@ -53,7 +58,7 @@ func (apiCfg *ApiConfig) ChangePassword(w http.ResponseWriter, r *http.Request) 
 		RespondWithError(w, http.StatusInternalServerError, "Unexpected server error", err)
 		return
 	}
-	
+
 	if user.HashedPassword.Valid {
 		match, err := auth.CheckPasswordHash(decodedBody.Password, user.HashedPassword.String)
 		if err != nil {
