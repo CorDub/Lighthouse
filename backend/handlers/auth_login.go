@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"strings"
 
 	"Lighthouse/internal/auth"
 	"Lighthouse/internal/database"
@@ -25,6 +26,10 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		RespondWithError(w, http.StatusBadRequest, "Couldn't decode parameters", err)
 		return
 	}
+
+	//normalize
+	params.Email = strings.TrimSpace(params.Email)
+	params.Password = strings.TrimSpace(params.Password)
 
 	//validate body
 	errValidation := validate.Struct(params)

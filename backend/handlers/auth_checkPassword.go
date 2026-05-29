@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"net/http"
+	"strings"
 
 	"Lighthouse/internal/auth"
 	"Lighthouse/internal/database"
@@ -20,6 +21,9 @@ func (apiCfg *ApiConfig) CheckPassword(w http.ResponseWriter, r *http.Request) {
 		RespondWithError(w, http.StatusBadRequest, "Couldn't decode the body", err)
 		return
 	}
+
+	//normalize
+	decodedBody.Email = strings.TrimSpace(decodedBody.Email)
 
 	//validate body
 	errValidation := validate.Struct(decodedBody)
