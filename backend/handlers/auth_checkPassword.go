@@ -21,8 +21,15 @@ func (apiCfg *ApiConfig) CheckPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//validate body
+	errValidation := validate.Struct(decodedBody)
+	if errValidation != nil {
+		RespondWithError(w, http.StatusBadRequest, "Invalid email", err)
+		return
+	}
+
 	//validate that a user exist with this email
-	user, err := apiCfg.DB.GetUserByEmail(r.Context(), decodedBody.Email) 
+	user, err := apiCfg.DB.GetUserByEmail(r.Context(), decodedBody.Email)
 	if err == sql.ErrNoRows {
 		RespondWithError(w, http.StatusUnauthorized, "There are no accounts with this email", err)
 		return
