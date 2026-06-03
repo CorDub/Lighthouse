@@ -1,6 +1,6 @@
 import './styles/Login.css';
 import loginText from './translations/Login.json';
-import { createEffect, createRenderEffect, createSignal, Show } from 'solid-js';
+import { createEffect, onMount, createSignal, Show } from 'solid-js';
 import { useNavigate } from "@solidjs/router"
 import { type ValueCheck } from './types/helpersTypes.ts';
 import Navbar from "./Navbar.tsx"
@@ -25,10 +25,29 @@ function Login() {
   const { defaults, setDefaults } = useDefaults();
 
   // navigate home directly without logging in if a user is found
-  createRenderEffect(() => {
+  onMount(() => {
     if (user()) {
-      console.log("user", user())
-      navigate("/home", {replace: true})
+      console.log("user onMount", user())
+      const resUser = user()
+      if (resUser) {
+        switch(resUser.role) {
+          case "visitor":
+            navigate("/home", {replace: true})
+            break;
+          case "agency":
+            navigate("/agencyHome", {replace: true})
+            break;
+          case "creator":
+            navigate("/creatorHome", {replace: true})
+            break;
+          case "brand":
+            navigate("/brandHome", {replace: true})
+            break;
+          default:
+            console.error("could not find this switch case")
+            break;
+        }
+      }
     }
   })
 
@@ -73,7 +92,26 @@ function Login() {
         const data = await response.json()
         const parsedUser = UserSchema.parse(data);
         setUser(parsedUser);
-        navigate("/home", { replace: true })
+        if (parsedUser) {
+          switch(parsedUser.role) {
+            case "visitor":
+              navigate("/home", {replace: true})
+              break;
+            case "agency":
+              console.log("agency path reached")
+              navigate("/agencyHome", {replace: true})
+              break;
+            case "creator":
+              navigate("/creatorHome", {replace: true})
+              break;
+            case "brand":
+              navigate("/brandHome", {replace: true})
+              break;
+            default:
+              console.error("could not find this switch case")
+              break;
+          }
+        }
       }
     } catch(error) {
       console.error(error)
