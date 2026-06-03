@@ -1,21 +1,17 @@
 import { Navigate } from "@solidjs/router";
 import { useUser } from "./UserContext.tsx";
-import type { ParentProps } from "solid-js";
+import { type ParentProps, Show } from "solid-js";
 
 function ProtectedRoute(props: ParentProps) {
-  const { user } = useUser()
+  const { user, isLoading } = useUser()
 
-  if (!user()) {
-    return (
-      <Navigate href="/"/>
-    )
-  } else {
-    return (
-      <>
+  return (
+    <Show when={!isLoading()} fallback={<div>Loading...</div>}>
+      <Show when={user()} fallback={<Navigate href="/login" />}>
         {props.children}
-      </>
-    )
-  }
+      </Show>
+    </Show>
+  )
 }
 
 export default ProtectedRoute;

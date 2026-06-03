@@ -11,12 +11,14 @@ import { BASE_URL } from "./helpers/config.ts";
 type UserContext = {
   user: () => User;
   setUser: (u: User) => void;
+  isLoading: () => boolean;
 }
 
 const UserContext = createContext<UserContext>();
 
 export function UserProvider(props: ParentProps) {
   const [user, setUser] = createSignal<User>(null);
+  const [isLoading, setLoading] = createSignal(true);
 
   onMount(
     async () => {
@@ -33,12 +35,14 @@ export function UserProvider(props: ParentProps) {
         }
       } catch(error) {
         console.error(error)
+      } finally {
+        setLoading(false);
       }
     }
   )
 
   return (
-    <UserContext.Provider value ={{ user, setUser }}>
+    <UserContext.Provider value ={{ user, setUser, isLoading }}>
       {props.children}
     </UserContext.Provider>
   );

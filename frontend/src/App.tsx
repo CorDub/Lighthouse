@@ -8,10 +8,12 @@ import { Route, Router, Navigate } from "@solidjs/router";
 import { UserProvider } from './UserContext.tsx';
 import { DefaultsProvider } from "./DefaultsContext.tsx";
 import ProtectedRoute from './ProtectedRoute.tsx';
+import AgencyProtectedRoute from "./AgencyProtectedRoute.tsx";
 import Login from "./Login.tsx";
 import Home from "./Home.tsx";
 import ForgottenPassword from "./ForgottenPassword.tsx";
 import ResetPassword from "./ResetPassword.tsx";
+import AgencyHome from "./AgencyHome.tsx";
 
 function App() {
   return (
@@ -26,6 +28,10 @@ function App() {
             
             <Route component={ProtectedRoute}>
               <Route path="/home" component={Home} />
+            </Route>
+
+            <Route component={AgencyProtectedRoute}>
+              <Route path="/agencyHome" component={AgencyHome} />
             </Route>
           </Router>
         </DefaultsProvider>
