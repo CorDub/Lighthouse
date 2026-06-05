@@ -25,3 +25,18 @@ MAGIC_LINK_TOKENS
 		expires_at TIMESTAMPTZ NOT NULL
 		revoked_at TIMESTAMPTZ
 
+REPORTS
+	  id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+	  name TEXT NOT NULL
+	  tracking_start TIMESTAMPTZ NOT NULL DEFAULT now()
+	  tracking_end TIMESTAMPTZ
+	  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+	  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+
+USER_REPORTS
+	  user_id UUID REFERENCES users(id)
+	  report_id UUID REFERENCES reports(id)
+	  PRIMARY KEY (user_id report_id)
+	  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+	  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+
