@@ -55,3 +55,28 @@
   border: 1px solid var(--grey);
   background-color: var(--grey);
 }
+
+.addButton {
+  border-radius: 15px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--shadow-pale-green);
+  width: 100%;
+  background-color: var(--shadow-pale-green);
+  font-size: 28px;
+  font-weight: 600;
+  padding: 0;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--grey);
+  transition: 
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.addButton:hover {
+  border-color: var(--grey);
+  color: var(--black)
+}
