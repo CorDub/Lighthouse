@@ -1,0 +1,11 @@
+.leftNav {
+  position: fixed;
+  top: 4rem;
+  left: 0;
+  width: 150px;
+  height: 100vh;
+  z-index: 1;
+  background-color: var(--shadow-pale-green);
+  /* padding: 1rem 0.5rem 1rem 0.5rem; */
+  padding: 0.5rem;
+}

@@ -1,6 +1,6 @@
 import './styles/Login.css';
 import loginText from './translations/Login.json';
-import { createEffect, onMount, createSignal, Show } from 'solid-js';
+import { createEffect, createRenderEffect, createSignal, Show } from 'solid-js';
 import { useNavigate } from "@solidjs/router"
 import { type ValueCheck } from './types/helpersTypes.ts';
 import Navbar from "./Navbar.tsx"
@@ -25,9 +25,9 @@ function Login() {
   const { defaults, setDefaults } = useDefaults();
 
   // navigate home directly without logging in if a user is found
-  onMount(() => {
+  createRenderEffect(() => {
     if (user()) {
-      console.log("user onMount", user())
+      console.log("user", user())
       const resUser = user()
       if (resUser) {
         switch(resUser.role) {
