@@ -1,0 +1,10 @@
+.open-plan {
+  position: fixed;
+  top: 4rem;
+  left: 150px;
+  width: calc(100% - 150px);
+  height: calc(100% - 4rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

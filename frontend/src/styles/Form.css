@@ -17,11 +17,12 @@
 .form-input {
   border-radius: 15px;
   border: 1px solid var(--grey);
-  padding-left: 0.5rem;
+  padding-left: 1rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   width: 100%;
   min-width: 250px;
+  background-color: var(--white);
   transition:
     border 0.25s ease,
 }
@@ -41,4 +42,8 @@
 
 .form-input-error {
   border: 2px solid var(--red);
+}
+
+.form-module {
+  width: 500px;
 }
