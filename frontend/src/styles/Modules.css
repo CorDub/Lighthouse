@@ -1,0 +1,6 @@
+.module {
+  max-width: 1126px;
+  width: 100%;
+  height: calc(100% - 2rem);
+  border-radius: 15px;
+}
