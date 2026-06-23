@@ -4,7 +4,7 @@ import "./styles/TextInput.css";
 type TextInputProps = {
   errors: string[],
   errorsSetFn: (errors: string[]) => void,
-  value: string,
+  value?: string,
   valueSetFn: (value: string) => void,
   placeholder?: string,
   autofocus?: boolean,
@@ -24,12 +24,10 @@ function TextInput(props: TextInputProps) {
   const [titleOnTop, setTitleOnTop] = createSignal(false)
 
   function nameFocus() {
-    console.log("focus", focused())
     if (focused()) {
       return
     }
 
-    console.log("props.value", props.value)
     if (!props.value) {
       setTitleOnTop(false)
     } 

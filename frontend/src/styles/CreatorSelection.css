@@ -1,0 +1,13 @@
+.cs-input {
+  display: flex;
+  align-items: center;
+}
+
+.cs-text-input {
+  width: 100%;
+}
+
+.cs-add-button {
+  width: fit-content;
+  margin-left: 0.5rem;
+}
