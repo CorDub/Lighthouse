@@ -1,0 +1,9 @@
+/* .switch {
+  border-radius: 15px;
+} */
+
+.switch-button {
+  border-radius: 15px;
+  border: 1px solid var(--grey);
+  outline: none;
+}

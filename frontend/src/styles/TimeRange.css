@@ -1,0 +1,19 @@
+.tr-recurring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.tr-dates {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tr-oneoff {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}

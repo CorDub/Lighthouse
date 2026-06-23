@@ -1,11 +1,13 @@
 import Errors from "./Errors.tsx";
 import TextInput from "./TextInput";
-import {type ErrorKey } from "./Errors.tsx";
+import { type ErrorKey } from "./Errors.tsx";
 import { Show, createSignal } from "solid-js";
 import TimeRange from "./TimeRange.tsx";
+import CreatorSelection from "./CreatorSelection.tsx";
 
 function CreateReportModule() {
   const [errors, setErrors] = createSignal<ErrorKey[]>([]);
+  
   const [name, setName] = createSignal("");
 
   return (
@@ -28,11 +30,14 @@ function CreateReportModule() {
             <Errors errors={errors()}/>
           </Show>
         </div>
-        <div class="form-timerange">
+        <div class="form-timerange"
+          style={{"margin-top":"1rem"}}>
+          <h3>Time</h3>
           <TimeRange />
         </div>
         <div class="form-users">
-
+          <h3>Creators</h3>
+          <CreatorSelection />
         </div>
         <div class="form-redes">
 
