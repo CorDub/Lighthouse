@@ -22,5 +22,9 @@
   "passwordTooLong": {
     "en": "Password is too long - max 72 characters",
     "es": "Contraseña demasiada larga - max 72 caracteres"
+  },
+  "nameRequired": {
+    "en": "Name is required",
+    "es": "Nombre requerido"
   }
 }

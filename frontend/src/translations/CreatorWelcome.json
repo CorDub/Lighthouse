@@ -1,0 +1,22 @@
+{
+  "welcomeHeading": {
+    "en": "Welcome!",
+    "es": "¡Bienvenido!"
+  },
+  "welcomeMessage": {
+    "en": "You've been invited to join Lighthouse. Please check that your name is correct below.",
+    "es": "Has sido invitado a unirte a Lighthouse. Por favor verifica que tu nombre sea correcto."
+  },
+  "nameInput": {
+    "en": "Your name",
+    "es": "Tu nombre"
+  },
+  "confirmButton": {
+    "en": "Confirm",
+    "es": "Confirmar"
+  },
+  "nameConfirmed": {
+    "en": "Thanks! Your name has been confirmed.",
+    "es": "¡Gracias! Tu nombre ha sido confirmado."
+  }
+}

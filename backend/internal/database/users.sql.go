@@ -13,7 +13,7 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, created_at, updated_at, email, hashed_password, language, role)
+INSERT INTO users (id, created_at, updated_at, email, hashed_password, language, role, name)
 VALUES (
   gen_random_uuid(),
   NOW(),
@@ -21,9 +21,10 @@ VALUES (
   $1,
   $2,
   $3,
-  $4
+  $4,
+  $5
 )
-RETURNING id, created_at, updated_at, email, hashed_password, language, role
+RETURNING id, created_at, updated_at, email, hashed_password, language, role, name
 `
 
 type CreateUserParams struct {
@@ -31,6 +32,7 @@ type CreateUserParams struct {
 	HashedPassword sql.NullString
 	Language       Language
 	Role           Role
+	Name           sql.NullString
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -39,6 +41,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.HashedPassword,
 		arg.Language,
 		arg.Role,
+		arg.Name,
 	)
 	var i User
 	err := row.Scan(
@@ -49,6 +52,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.HashedPassword,
 		&i.Language,
 		&i.Role,
+		&i.Name,
 	)
 	return i, err
 }
@@ -61,7 +65,7 @@ VALUES (
   NOW(),
   $1
 )
-RETURNING id, created_at, updated_at, email, hashed_password, language, role
+RETURNING id, created_at, updated_at, email, hashed_password, language, role, name
 `
 
 func (q *Queries) CreateUserViaGoogle(ctx context.Context, email string) (User, error) {
@@ -75,12 +79,43 @@ func (q *Queries) CreateUserViaGoogle(ctx context.Context, email string) (User, 
 		&i.HashedPassword,
 		&i.Language,
 		&i.Role,
+		&i.Name,
 	)
 	return i, err
 }
 
+const getCreators = `-- name: GetCreators :many
+SELECT name
+FROM users
+WHERE role = 'creator'
+ORDER BY name ASC
+`
+
+func (q *Queries) GetCreators(ctx context.Context) ([]sql.NullString, error) {
+	rows, err := q.db.QueryContext(ctx, getCreators)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []sql.NullString
+	for rows.Next() {
+		var name sql.NullString
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		items = append(items, name)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, created_at, updated_at, email, hashed_password, language, role
+SELECT id, created_at, updated_at, email, hashed_password, language, role, name
 FROM users
 WHERE email = $1
 `
@@ -96,12 +131,13 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.HashedPassword,
 		&i.Language,
 		&i.Role,
+		&i.Name,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, created_at, updated_at, email, hashed_password, language, role
+SELECT id, created_at, updated_at, email, hashed_password, language, role, name
 FROM users
 WHERE id = $1
 `
@@ -117,12 +153,13 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.HashedPassword,
 		&i.Language,
 		&i.Role,
+		&i.Name,
 	)
 	return i, err
 }
 
 const getUsers = `-- name: GetUsers :many
-SELECT id, created_at, updated_at, email, hashed_password, language, role
+SELECT id, created_at, updated_at, email, hashed_password, language, role, name
 FROM users
 `
 
@@ -143,6 +180,7 @@ func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
 			&i.HashedPassword,
 			&i.Language,
 			&i.Role,
+			&i.Name,
 		); err != nil {
 			return nil, err
 		}

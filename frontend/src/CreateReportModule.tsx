@@ -7,7 +7,6 @@ import CreatorSelection from "./CreatorSelection.tsx";
 
 function CreateReportModule() {
   const [errors, setErrors] = createSignal<ErrorKey[]>([]);
-  
   const [name, setName] = createSignal("");
 
   return (

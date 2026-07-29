@@ -1,0 +1,19 @@
+.search-results {
+  border-radius: 15px;
+  margin-top: 0.5rem;
+  background-color: rgba(142, 164, 158, 0.5);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sr-line {
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+}
+
+.srlactive {
+  border-radius: 15px;
+  background-color: rgba(142, 164, 158);
+  cursor: pointer;
+}

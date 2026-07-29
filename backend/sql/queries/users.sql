@@ -1,5 +1,5 @@
 -- name: CreateUser :one
-INSERT INTO users (id, created_at, updated_at, email, hashed_password, language, role)
+INSERT INTO users (id, created_at, updated_at, email, hashed_password, language, role, name)
 VALUES (
   gen_random_uuid(),
   NOW(),
@@ -7,7 +7,8 @@ VALUES (
   $1,
   $2,
   $3,
-  $4
+  $4,
+  $5
 )
 RETURNING *;
 
@@ -40,3 +41,9 @@ UPDATE users
 SET updated_at = NOW(),
   language = $2
 WHERE id = $1;
+
+-- name: GetCreators :many
+SELECT name
+FROM users
+WHERE role = 'creator'
+ORDER BY name ASC;

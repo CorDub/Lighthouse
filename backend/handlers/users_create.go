@@ -19,6 +19,7 @@ func (apiCfg *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
 		Password string `json:"password" validate:"required,min=8,max=72,printascii"`
 		Language database.Language `json:"language" validate:"omitempty,oneof=en es"`
 		Role database.Role `json:"role" validate:"omitempty,oneof=visitor brand agency creator"`
+		Name string `json:"name" validate:"max=254"`
 	}
 
 	//decode
@@ -33,6 +34,7 @@ func (apiCfg *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
 	//normalize
 	params.Email = strings.TrimSpace(params.Email)
 	params.Password = strings.TrimSpace(params.Password)
+	params.Name = strings.TrimSpace(params.Name)
 
 	//provide default values if nothing has been passed for optional fields
 	if (params.Language == "") {

@@ -5,7 +5,8 @@
   width: 150px;
   height: 100vh;
   z-index: 1;
-  background-color: var(--shadow-pale-green);
+  /* background-color: var(--shadow-pale-green); */
+  background-color: rgba(142, 164, 158, 0.5);
   /* padding: 1rem 0.5rem 1rem 0.5rem; */
   padding: 0.5rem;
 }

@@ -10,6 +10,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/google/uuid"
+
 	_ "github.com/lib/pq"
 	"github.com/joho/godotenv"
 )
@@ -20,6 +22,7 @@ type tentativeUser struct{
 	Password string
 	Language database.Language
 	Role database.Role
+	Name string
 }
 
 
@@ -28,7 +31,8 @@ func seedUser(
 	email string, 
 	password string,
 	language database.Language,
-	role database.Role) (string, error) {
+	role database.Role,
+	name string) (string, error) {
 	hash, err := auth.HashPassword(password)
 	if err != nil {
 		log.Printf("Couldn't hash the password: %s", err)
@@ -43,6 +47,10 @@ func seedUser(
 		},
 		Language: language,
 		Role: role,
+		Name: sql.NullString{
+			String: name,
+			Valid: name != "",
+		},
 	}
 
 	_, err2 := apiCfg.DB.CreateUser(context.Background(), params)
@@ -52,6 +60,39 @@ func seedUser(
 	}
 
 	exitString := fmt.Sprintf("User with email %s has been created", email)
+	return exitString, nil
+}
+
+
+func seedInvite(
+	token string,
+	user_id uuid.UUID,
+	invite_name string,
+	dbConn *sql.DB,
+) (string, error) {
+
+	query := `
+		INSERT INTO magic_link_tokens (token, created_at, updated_at, user_id, name, expires_at)
+		VALUES (
+			$1,
+			NOW(),
+			NOW(),
+			$2,
+			$3,
+			NOW() + INTERVAL '1 year'
+		)
+		RETURNING token, name
+	`
+	var returnToken string
+	var returnName string
+
+	err := dbConn.QueryRowContext(context.Background(), query, token, user_id, invite_name).Scan(&returnToken, &returnName)
+	if (err != nil) {
+		log.Printf("Couldn't create magic link invite: %s", err)
+		return "", err
+	}
+
+	exitString := fmt.Sprintf("Invite with token %s and name %s has been created", returnToken, returnName)
 	return exitString, nil
 }
 
@@ -102,16 +143,49 @@ func main() {
 		Language: "es",
 		Role: "agency",
 	}
+	user5 := tentativeUser{
+		Email: "creator1@gmail.com",
+		Password: "CreatorPW",
+		Language: "en",
+		Role: "creator",
+		Name: "Creator1",
+	}
+	user6 := tentativeUser{
+		Email: "creator2@gmail.com",
+		Password: "CreatorPW2",
+		Language: "es",
+		Role: "creator",
+		Name: "Creator2",
+	}
 
-	userSlice := []tentativeUser{user1, user2, user3, user4}
+	userSlice := []tentativeUser{user1, user2, user3, user4, user5, user6}
 
 	for _, user := range userSlice {
-		exitStr, err := seedUser(apiCfg, user.Email, user.Password, user.Language, user.Role)
+		exitStr, err := seedUser(apiCfg, user.Email, user.Password, user.Language, user.Role, user.Name)
 		if err != nil {
 			log.Printf("Couldn't seed user with email %s", user.Email)
 			return
 		}
 		log.Println(exitStr)
 	}
+
+	log.Println("Users seeded");
+	log.Println("------------");
+	log.Println("Creating creator invite");
+
+	agencyUser, err := apiCfg.DB.GetUserByEmail(context.Background(), "agency@agency.com")
+	if err != nil {
+		log.Printf("Couldn't retrieve agency user and its ID: %s", err)
+		return
+	}
+
+	permanentInviteString, err := seedInvite("permanentInvite", agencyUser.ID, "unknownCreator", dbConn)
+	if err != nil {
+		log.Printf("Couldn't create the permanent invite: %s", err)
+		return
+	}
+
+	log.Println(permanentInviteString);
+
 	log.Println("Database successfully seeded")
 }

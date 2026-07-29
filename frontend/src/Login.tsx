@@ -27,7 +27,6 @@ function Login() {
   // navigate home directly without logging in if a user is found
   createRenderEffect(() => {
     if (user()) {
-      console.log("user", user())
       const resUser = user()
       if (resUser) {
         switch(resUser.role) {

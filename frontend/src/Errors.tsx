@@ -26,7 +26,7 @@ function Errors(props: ErrorsProps) {
   const { defaults } = useDefaults();
 
   return (
-    <div class="error"
+    <div class="errors"
       style={{
         "margin-top": `${errorDefaults.margin.marginTop}rem`,
         "margin-bottom": `${errorDefaults.margin.marginBottom}rem`

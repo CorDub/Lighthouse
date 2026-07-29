@@ -14,6 +14,7 @@ import Login from "./Login.tsx";
 import Home from "./Home.tsx";
 import ForgottenPassword from "./ForgottenPassword.tsx";
 import ResetPassword from "./ResetPassword.tsx";
+import CreatorWelcome from "./CreatorWelcome.tsx";
 import AgencyHome from "./AgencyHome.tsx";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route path="/login" component={Login} />
             <Route path="/forgottenPassword" component={ForgottenPassword} />
             <Route path="/resetPassword" component={ResetPassword} />
+            <Route path="/invite" component={CreatorWelcome} />
             
             <Route component={ProtectedRoute}>
               <Route path="/home" component={Home} />
