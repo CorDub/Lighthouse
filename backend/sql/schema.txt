@@ -8,6 +8,8 @@ USERS
 			users_language_check CHECK (language IN ('en' 'es'))
 		role TEXT NOT NULL DEFAULT 'visitor'
 			role_check CHECK (role IN ('visitor' 'agency' 'creator' 'brand'))
+		name TEXT
+			creator_requires_name
 
 REFRESH_TOKENS
 	  token TEXT PRIMARY KEY
@@ -24,6 +26,7 @@ MAGIC_LINK_TOKENS
 	  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE
 		expires_at TIMESTAMPTZ NOT NULL
 		revoked_at TIMESTAMPTZ
+		name TEXT
 
 REPORTS
 	  id UUID PRIMARY KEY DEFAULT gen_random_uuid()

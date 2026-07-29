@@ -1,15 +1,17 @@
 .text-input {
-  position: relative
+  position: relative;
+  min-height: 30px;
 }
 
 .text-input-name {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   top: 0.25rem;
   left: 0.75rem;
   transform: scale(1);
   padding-right: 0.25rem;
   padding-left: 0.25rem;
+  cursor: text;
   transition:
     top 0.25s ease,
     left 0.25s ease,
@@ -20,4 +22,26 @@
   top: -0.75rem;
   left: 0.25rem;
   transform: scale(0.8);
+  border-radius: 15px;
+  border-top: 0.5px solid gray;
+}
+
+.ti-wrapper {
+  position: relative;
+}
+
+.ti-real {
+  position: absolute;
+  inset: 0;
+  font: inherit;
+  z-index: 1;
+  background: transparent;
+}
+
+.ti-ghost {
+  position: absolute;
+  inset: 0;
+  font: inherit;
+  z-index: 0;
+  color: var(--pale-grey);
 }

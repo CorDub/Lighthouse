@@ -18,6 +18,7 @@ type MagicLinkToken struct {
 	UserID    uuid.UUID
 	ExpiresAt time.Time
 	RevokedAt sql.NullTime
+	Name      sql.NullString
 }
 
 type RefreshToken struct {
@@ -29,6 +30,15 @@ type RefreshToken struct {
 	RevokedAt sql.NullTime
 }
 
+type Report struct {
+	ID            uuid.UUID
+	Name          string
+	TrackingStart time.Time
+	TrackingEnd   sql.NullTime
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+
 type User struct {
 	ID             uuid.UUID
 	CreatedAt      time.Time
@@ -37,4 +47,12 @@ type User struct {
 	HashedPassword sql.NullString
 	Language       Language
 	Role           Role
+	Name           sql.NullString
+}
+
+type UserReport struct {
+	UserID    uuid.UUID
+	ReportID  uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

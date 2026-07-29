@@ -4,6 +4,7 @@ import (
 	"os"
 	"log"
 	"strings"
+	"fmt"
 )
 
 // Cathedral
@@ -78,4 +79,5 @@ func main() {
 	if errWriting != nil {
 		log.Fatalf("Error while writing to file: %s", errWriting)
 	}
+	fmt.Println("Schema rebuilt")
 }

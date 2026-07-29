@@ -17,5 +17,5 @@ CREATE TABLE user_reports (
 );
 
 -- +goose Down
-DROP TABLE reports;
 DROP TABLE user_reports;
+DROP TABLE reports;

@@ -93,6 +93,8 @@ func main() {
 	mux.Handle("GET /api/users", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.GetUsers)))
 	mux.Handle("PATCH /api/users/{id}/language", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.UpdateUserLanguage)))
 	mux.Handle("POST /api/reports", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.CreateReport)))
+	mux.Handle("GET /api/users/creatorsAvailable", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.GetCreatorsAvailable)))
+	mux.Handle("POST /api/invite", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.CreateMagicLinkInvite)))
 
 	handler := middleware.Cors(apiCfg.Env, mux)
 

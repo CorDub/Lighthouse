@@ -1,0 +1,13 @@
+.clipboard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cb-confirm {
+  background-color: var(--black);
+  color: var(--white);
+  border-radius: 15px;
+  width: fit-content;
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+}

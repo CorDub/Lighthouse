@@ -50,6 +50,7 @@ func dbUserToUser(user database.User) User {
 		Email: user.Email,
 		Language: user.Language,
 		Role: user.Role,
+		Name: user.Name.String,
 	}
 }
 

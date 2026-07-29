@@ -1,10 +1,11 @@
 -- name: CreateMagicLinkToken :one
-INSERT INTO magic_link_tokens (token, created_at, updated_at, user_id, expires_at)
+INSERT INTO magic_link_tokens (token, created_at, updated_at, user_id, name, expires_at)
 VALUES (
   $1,
   NOW(),
   NOW(),
   $2,
+  $3,
   NOW() + INTERVAL '1 hour'
 )
 RETURNING *;

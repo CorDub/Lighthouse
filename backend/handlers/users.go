@@ -16,6 +16,7 @@ type User struct {
 	Email string `json:"email"`
 	Language database.Language `json:"language"`
 	Role database.Role `json:"role"`
+	Name string `json:"name"`
 }
 
 type getUsersResponse struct {

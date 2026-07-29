@@ -8,6 +8,7 @@
   flex-direction: column;
   margin: 0;
   width: 100%;
+  min-height: 30px;
 }
 
 .form-label {
@@ -22,6 +23,7 @@
   padding-bottom: 0.25rem;
   width: 100%;
   min-width: 250px;
+  height: fit-content;
   background-color: var(--white);
   transition:
     border 0.25s ease,

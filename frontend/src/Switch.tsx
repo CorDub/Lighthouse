@@ -15,6 +15,7 @@ function Switch(props: SwitchProps) {
         <div>
           <p style={{"margin-bottom":"0.25rem"}}>Recurring / One-off</p>
           <button
+            type="button"
             class="switch-button clickable"
             onClick={() => props.setStatus(false)}>
             {props.onText}

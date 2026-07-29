@@ -7,29 +7,32 @@ package database
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
 
 const createMagicLinkToken = `-- name: CreateMagicLinkToken :one
-INSERT INTO magic_link_tokens (token, created_at, updated_at, user_id, expires_at)
+INSERT INTO magic_link_tokens (token, created_at, updated_at, user_id, name, expires_at)
 VALUES (
   $1,
   NOW(),
   NOW(),
   $2,
+  $3,
   NOW() + INTERVAL '1 hour'
 )
-RETURNING token, created_at, updated_at, user_id, expires_at, revoked_at
+RETURNING token, created_at, updated_at, user_id, expires_at, revoked_at, name
 `
 
 type CreateMagicLinkTokenParams struct {
 	Token  string
 	UserID uuid.UUID
+	Name   sql.NullString
 }
 
 func (q *Queries) CreateMagicLinkToken(ctx context.Context, arg CreateMagicLinkTokenParams) (MagicLinkToken, error) {
-	row := q.db.QueryRowContext(ctx, createMagicLinkToken, arg.Token, arg.UserID)
+	row := q.db.QueryRowContext(ctx, createMagicLinkToken, arg.Token, arg.UserID, arg.Name)
 	var i MagicLinkToken
 	err := row.Scan(
 		&i.Token,
@@ -38,12 +41,13 @@ func (q *Queries) CreateMagicLinkToken(ctx context.Context, arg CreateMagicLinkT
 		&i.UserID,
 		&i.ExpiresAt,
 		&i.RevokedAt,
+		&i.Name,
 	)
 	return i, err
 }
 
 const getMagicLinkTokenByToken = `-- name: GetMagicLinkTokenByToken :one
-SELECT token, created_at, updated_at, user_id, expires_at, revoked_at
+SELECT token, created_at, updated_at, user_id, expires_at, revoked_at, name
 FROM magic_link_tokens
 WHERE token = $1
 `
@@ -58,6 +62,7 @@ func (q *Queries) GetMagicLinkTokenByToken(ctx context.Context, token string) (M
 		&i.UserID,
 		&i.ExpiresAt,
 		&i.RevokedAt,
+		&i.Name,
 	)
 	return i, err
 }

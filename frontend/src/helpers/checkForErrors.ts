@@ -18,7 +18,8 @@ export function checkForErrors(...checks: ValueCheck[]): ErrorKey[] {
 function singleCheckForError(check: ValueCheck): ErrorKey[] {
   const checkFunctionsTable = {
     "email": checkEmail,
-    "password": checkPassword
+    "password": checkPassword,
+    "name": checkName
   }
 
   return checkFunctionsTable[check[0]](check[1])
@@ -45,6 +46,17 @@ function checkEmail(value: string): ErrorKey[] {
   const notTooLong = checkMax(value, 254)
   if (!notTooLong) {
     errorList.push("emailTooLong")
+  }
+
+  return errorList
+}
+
+function checkName(value: string): ErrorKey[] {
+  let errorList: ErrorKey[] = []
+
+  const present = checkRequired(value)
+  if (!present) {
+    errorList.push("nameRequired")
   }
 
   return errorList
