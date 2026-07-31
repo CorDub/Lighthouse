@@ -1,0 +1,89 @@
+.lockable-text-input {
+  width: 100%;
+  display: flex;
+  height: 30px;
+  justify-content: center;
+}
+
+.lti-locked {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 15px;
+  border: 1px solid var(--grey);
+  /* width: fit-content; */
+  /* min-width: 100px;
+  max-width: 500px; */
+  width: 200px;
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+  gap: 0.5rem;
+  background-color: var(--light-green);
+  transition: 
+    border 0.2s ease,
+    background-color 0.2s ease,
+    width 0.2s ease;
+}
+
+.lti-locked-text {
+  margin-left: 0.5rem;
+}
+
+.lti-locked:hover {
+  border: 1px solid var(--white);
+}
+
+.lti-locked.lti-locked-opening {
+  border: 1px solid var(--black);
+  width: 100%;
+  background-color: var(--white);
+}
+
+.lti-edit-svg {
+  color: var(--grey);
+  height: 1rem;
+  width: 1rem;
+  margin-top: 0.2rem;
+  transition: color 0.25s ease;
+}
+
+.lti-edit-svg.lti-edit-svg-hovered {
+  color: var(--white);
+}
+
+.lti-unlocked {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  z-index: 0;
+  transition: width 0.2s ease;
+}
+
+.lti-unlocked.lti-unlocked-closing {
+  width: 200px;
+}
+
+.form-input.lti-unlocked-back {
+  border: 1px solid var(--grey);
+  background-color: var(--light-green);
+}
+
+.lti-confirm {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.25rem;
+  z-index: 1;
+}
+
+.lti-confirm-svg {
+  color: var(--black);
+  transition: 
+    color 0.2s ease;
+}
+
+.lti-confirm-svg.disappear {
+  opacity: 0;
+}
+
+.lti-confirm-svg:hover {
+  color: var(--light-green);
+}

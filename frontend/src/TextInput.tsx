@@ -1,4 +1,4 @@
-import { createEffect, Show, createSignal } from "solid-js";
+import { Show, createSignal, onMount } from "solid-js";
 import "./styles/TextInput.css";
 
 type TextInputProps = {
@@ -13,28 +13,40 @@ type TextInputProps = {
   searchFn?: () => void,
   enterFn?: (...args: any[]) => any,
   enterFnArg?: any,
+  onBlurFn?: (...args: any[]) => void,
+  onBlurFnArg?: any,
   placeholder?: string,
   autofocus?: boolean,
-  name?: string
+  name?: string,
+  nameOnTop?: boolean,
   bgColor?: string,
+  newClass?: string,
+  newClassToggle?: boolean,
 }
 
 function TextInput(props: TextInputProps) {
   //autofocus
   let inputRef: HTMLInputElement | undefined
-  createEffect(() => {
+  const [titleOnTop, setTitleOnTop] = createSignal(false)
+
+  onMount(() => {
     if (props.autofocus) {
       inputRef?.focus()
     }
+
+    if (props.name && props.nameOnTop) {
+      setTitleOnTop(true)
+    }
   })
-  const [focused, setFocused] = createSignal(false)
-  const [titleOnTop, setTitleOnTop] = createSignal(false)
 
   function nameFocus() {
-    if (focused()) {
+    // do the onBlurFn if provided and return
+    if (props.onBlurFn) {
+      props.onBlurFn(props.onBlurFnArg) 
       return
     }
 
+    // otherwise put the title on top
     if (props.name && titleOnTop()) {
       props.valueSetFn("")
       setTitleOnTop(false)
@@ -67,13 +79,17 @@ function TextInput(props: TextInputProps) {
           ref={inputRef}
           type="text"
           class="form-input ti-real"
-          classList={{"form-input-error": props.errors.length > 0}}
+          classList={{
+            "form-input-error": props.errors.length > 0,
+            [props.newClass ?? ""]: props.newClassToggle
+          }}
           onFocus={() => props.errorsSetFn([])}
           onClick={() => setTitleOnTop(true)}
           onBlur={() => nameFocus()}
           onInput={(e) => triggerSearch(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && props.enterFn) {
+              e.preventDefault()
               props.enterFn(props.enterFnArg)
             }
           }}
@@ -81,6 +97,7 @@ function TextInput(props: TextInputProps) {
           placeholder={props.placeholder}/>
         <input 
           class="form-input ti-ghost"
+          classList={{[props.newClass ?? ""]: props.newClassToggle}}
           style={props.bgColor ? {"background-color": props.bgColor} : ""}
           type="text"
           disabled

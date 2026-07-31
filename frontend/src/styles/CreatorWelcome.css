@@ -25,7 +25,10 @@
 
 .cw-input {
   width: 50%;
+  margin-top: 0.5rem;
   margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
 }
 
 .cw-errors {

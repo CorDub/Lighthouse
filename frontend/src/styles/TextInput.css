@@ -1,6 +1,7 @@
 .text-input {
   position: relative;
   min-height: 30px;
+  width: 100%;
 }
 
 .text-input-name {
@@ -28,6 +29,7 @@
 
 .ti-wrapper {
   position: relative;
+  width: 100%;
 }
 
 .ti-real {
