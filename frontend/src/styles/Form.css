@@ -22,11 +22,13 @@
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   width: 100%;
-  min-width: 250px;
+  min-width: 200px;
   height: fit-content;
   background-color: var(--white);
   transition:
-    border 0.25s ease,
+    border 0.2s ease,
+    background-color 0.2s ease,
+    width 0.2s ease;
 }
 
 .form-input:hover {

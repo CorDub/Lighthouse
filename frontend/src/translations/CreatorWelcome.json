@@ -11,12 +11,24 @@
     "en": "Your name",
     "es": "Tu nombre"
   },
+  "nameInputTitle": {
+    "en": "Confirm your creator name",
+    "es": "Confirma tu nombre de creador"
+  },  
   "confirmButton": {
     "en": "Confirm",
     "es": "Confirmar"
   },
   "nameConfirmed": {
-    "en": "Thanks! Your name has been confirmed.",
+    "en": "Thanks for confirming your name",
     "es": "¡Gracias! Tu nombre ha sido confirmado."
+  },
+  "emailInput": {
+    "en": "Email",
+    "es": "Correo"
+  }, 
+  "passwordInput": {
+    "en": "Password",
+    "es": "Contraseña"
   }
 }
