@@ -16,6 +16,7 @@ import ForgottenPassword from "./ForgottenPassword.tsx";
 import ResetPassword from "./ResetPassword.tsx";
 import CreatorWelcome from "./CreatorWelcome.tsx";
 import AgencyHome from "./AgencyHome.tsx";
+import SocialNetworks from "./SocialNetworks.tsx";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             
             <Route component={ProtectedRoute}>
               <Route path="/home" component={Home} />
+              <Route path="/socialNetworks" component={SocialNetworks} />
             </Route>
 
             <Route component={AgencyProtectedRoute}>

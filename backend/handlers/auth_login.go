@@ -65,17 +65,6 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// set the JWT cookie
-	http.SetCookie(w, &http.Cookie{
-		Name: "token",
-		Value: token,
-		HttpOnly: true,
-		Secure: apiCfg.Secure,
-		SameSite: apiCfg.SameSite,
-		Path: "/",
-		MaxAge: 15 * 60,
-	})
-
 	// create refresh token
 	refreshToken := auth.MakeRefreshToken()
 	refreshTokenParams := database.CreateRefreshTokenParams{
@@ -89,6 +78,17 @@ func (apiCfg *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		RespondWithError(w, http.StatusInternalServerError, "Unexpected server error", err)
 		return
 	}
+
+	// set the JWT cookie
+	http.SetCookie(w, &http.Cookie{
+		Name: "token",
+		Value: token,
+		HttpOnly: true,
+		Secure: apiCfg.Secure,
+		SameSite: apiCfg.SameSite,
+		Path: "/",
+		MaxAge: 15 * 60,
+	})
 
 	// set the refresh cookie
 	http.SetCookie(w, &http.Cookie{

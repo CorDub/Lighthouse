@@ -6,7 +6,8 @@ export const UserSchema = z.object({
   updatedAt: z.iso.datetime(),
   email: z.email(),
   language: z.enum(["en", "es"]),
-  role: z.enum(["visitor", "agency", "creator", "brand"])
+  role: z.enum(["visitor", "agency", "creator", "brand"]),
+  name: z.string().optional(),
 }).nullable();
 
 export type User = z.infer<typeof UserSchema>;

@@ -1,6 +1,6 @@
 import "./styles/CreatorWelcome.css";
 import { createSignal, Show } from "solid-js";
-import { useSearchParams } from "@solidjs/router";
+import { useSearchParams, useNavigate } from "@solidjs/router";
 import Navbar from "./Navbar.tsx";
 import Errors from "./Errors.tsx";
 import TextInput from "./TextInput.tsx";
@@ -13,7 +13,11 @@ import Text from "./Text.tsx";
 import { useDefaults } from "./DefaultsContext.tsx";
 import { getText } from "./helpers/getText.ts";
 import { type LanguageCode } from "./types/langTypes.ts";
+import { isLanguageCode } from "./types/langTypes.ts";
 import LockableTextInput from "./LockableTextInput.tsx";
+import { BASE_URL } from "./helpers/config.ts";
+import { useUser } from "./UserContext.tsx";
+import { UserSchema } from "./schemas/user.ts";
 
 function CreatorWelcome() {
   const [searchParams] = useSearchParams<{ token: string, name: string }>()
@@ -22,14 +26,18 @@ function CreatorWelcome() {
   const [password, setPassword] = createSignal("")
   const [language, setLanguage] = createSignal<LanguageCode>("en")
   const [errors, setErrors] = createSignal<ErrorKey[]>([]);
-  const [step, setStep] = createSignal(0);
   const { defaults } = useDefaults();
+  const navigate = useNavigate();
+  const { setUser } = useUser();
 
-  async function confirmName(e: Event) {
+  async function createProfile(e: Event) {
     e.preventDefault();
 
+    // check we got all values needed
     const checks: ValueCheck[] = [
       ["name", name()],
+      ["email", email()],
+      ["password", password()]
     ]
     const checkResults = checkForErrors(...checks)
 
@@ -38,17 +46,43 @@ function CreatorWelcome() {
       return
     }
 
-    setStep(1)
-    ///////
+    // check browser language, set en by default
+    const browserLanguage = navigator.language.split('-')[0];
+    if (!isLanguageCode(browserLanguage)) {
+      setLanguage("en")
+    } else {
+      setLanguage(browserLanguage)
+    }
+
+    const response = await fetch(`${BASE_URL}/api/users`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: name(),
+        email: email(),
+        password: password(),
+        language: language(),
+        role: "creator"
+      })
+    })
+
+    if (response.ok) {
+      const data = await response.json();
+      const parsedUser = UserSchema.parse(data.user);
+      setUser(parsedUser);
+      navigate("/socialNetworks", { replace: true });
+    }
   }
 
   return (
     <div class="creator-welcome">
       <Navbar />
-      <Show when={step() === 0}>
         <form
           class="cw-form"
-          onSubmit={(e) => confirmName(e)}>
+          onSubmit={(e) => createProfile(e)}>
           <h1 class="cw-heading">
             <Text
               value={creaWelText.welcomeHeading}
@@ -60,16 +94,6 @@ function CreatorWelcome() {
               lang={defaults().lang} />
           </p>
           <div class="cw-input">
-            {/* <TextInput
-              errors={errors()}
-              errorsSetFn={setErrors}
-              value={name()}
-              valueSetFn={setName}
-              placeholder={getText(creaWelText.nameInput, defaults().lang)}
-              autofocus={true}
-              name={getText(creaWelText.nameInputTitle, defaults().lang)}
-              nameOnTop={true}
-              bgColor={"var(--white)"}/> */}
             <LockableTextInput 
               errors={errors()}
               errorsSetFn={setErrors}
@@ -104,22 +128,13 @@ function CreatorWelcome() {
               }}/>
           </Show>
           
-          <button class="green-button clickable" onClick={(e) => confirmName(e)}>
+          <button class="green-button clickable" onClick={(e) => createProfile(e)}>
             <Text
               value={creaWelText.confirmButton}
               lang={defaults().lang} />
           </button>
         </form>
-      </Show>
-      
-      {/* <Show when={step() === 1}>
-        <div class="cw-step2">
-          <div class="cw-message">
-            <Text 
-              />
-          </div>
-        </div>
-      </Show>  */}
+
     </div>
   )
 }
