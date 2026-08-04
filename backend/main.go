@@ -88,6 +88,7 @@ func main() {
 	mux.HandleFunc("GET /api/checkAuth", apiCfg.CheckAuth)
 	mux.HandleFunc("POST /api/checkPassword", apiCfg.CheckPassword)
 	mux.HandleFunc("POST /api/changePassword", apiCfg.ChangePassword)
+	mux.HandleFunc("POST /api/users/creatorInvite", apiCfg.CreateCreatorFromInvite)
 
 	//protected
 	mux.Handle("GET /api/users", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.GetUsers)))

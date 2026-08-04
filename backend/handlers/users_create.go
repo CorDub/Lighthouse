@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"errors"
 	"context"
+	"log"
 
 	"Lighthouse/internal/auth"
 	"Lighthouse/internal/database"
@@ -18,7 +19,7 @@ type createUserParams struct {
 	Password string `json:"password" validate:"required,min=8,max=72,printascii"`
 	Language database.Language `json:"language" validate:"omitempty,oneof=en es"`
 	Role database.Role `json:"role" validate:"omitempty,oneof=visitor brand agency creator"`
-	Name string `json:"name" validate:"max=254"`
+	Name string `json:"name" validate:"omitempty,max=254"`
 }
 
 func (apiCfg *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +52,7 @@ func (apiCfg *ApiConfig) respondCreateUserError(w http.ResponseWriter, err error
 		RespondWithError(w, http.StatusBadRequest, "Invalid email or password", err)
 	case errors.Is(err, ErrHashingPassword):
 		RespondWithError(w, http.StatusInternalServerError, "Couldn't hash password", err)
-	case errors.Is(err, ErrHashingPassword):
+	case errors.Is(err, ErrEmailTaken):
 		RespondWithError(w, http.StatusConflict, "Email taken", err)
 	case errors.Is(err, ErrCreatingUser):
 		RespondWithError(w, http.StatusInternalServerError, "Couldn't create user", err)
@@ -94,6 +95,12 @@ func (apiCfg *ApiConfig) createUser(ctx context.Context, params createUserParams
 			String: hash,
 			Valid: true,
 		},
+		Language: params.Language,
+		Role: params.Role,
+		Name: sql.NullString{
+			String: params.Name,
+			Valid: params.Name != "",
+		},
 	}
 
 	dbUser, err := apiCfg.DB.CreateUser(ctx, createUserParams)
@@ -103,7 +110,7 @@ func (apiCfg *ApiConfig) createUser(ctx context.Context, params createUserParams
 		if errors.As(err, &pqErr) && pqErr.Code == "23505" {
 			return User{}, ErrEmailTaken
 		}
-
+		log.Printf("Error creating user: %s", err)
 		return User{}, ErrCreatingUser
 	}
 

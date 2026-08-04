@@ -1,4 +1,4 @@
-import { Show, batch, createSignal } from "solid-js";
+import { Show, batch, createSignal, onMount } from "solid-js";
 import "./styles/LockableTextInput.css";
 import TextInput from "./TextInput.tsx";
 import Errors from "./Errors.tsx";
@@ -17,6 +17,12 @@ function LockableTextInput(props: LockableTextInputProps) {
   const [errors, setErrors] = createSignal<ErrorKey[]>([]);
   const [lockHovered, setLockHovered] = createSignal(false);
   const [lockOpening, setLockOpening] = createSignal(false);
+
+  onMount(() => {
+    if (props.locked !== undefined) {
+      setLocked(props.locked)
+    }
+  })
 
   function openLock() {
     setLockOpening(true)

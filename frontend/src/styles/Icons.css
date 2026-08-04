@@ -8,3 +8,15 @@
   height: 1rem;
   margin-top: 0.2rem;
 }
+
+.sm-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+}
+
+.sm-icon svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
