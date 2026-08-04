@@ -58,3 +58,28 @@ func (apiCfg *ApiConfig) sendPasswordRecoveryEmail(magicLinkToken, to string) er
 
 	return nil
 }
+
+
+// link to be modified if reused
+
+// func (apiCfg *ApiConfig) sendEmailVerification(magicLinkToken, to string) error {
+// 	link := fmt.Sprintf("http://localhost:5173/invite?token=%s", magicLinkToken)
+// 	subject := "Email account verification"
+// 	body := fmt.Sprintf(`Hi,
+
+// 	Welcome to Lighthouse!
+
+// 	Please click on the link below to confirm your email address:
+
+// 	%s
+
+// 	The Lighthouse team.`, link)
+
+// 	body = strings.ReplaceAll(body, "\n", "\r\n")
+// 	err := apiCfg.sendEmail(apiCfg.From, to, subject, body)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	return nil
+// }
