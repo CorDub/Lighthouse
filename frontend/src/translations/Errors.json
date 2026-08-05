@@ -26,5 +26,13 @@
   "nameRequired": {
     "en": "Name is required",
     "es": "Nombre requerido"
+  },
+  "channelNameRequired": {
+    "en": "Channel name is required",
+    "es": "Nombre del canal requerido"
+  },
+  "channelNameTooLong": {
+    "en": "Channel name is too long",
+    "es": "Nombre del canal demasiado largo"
   }
 }

@@ -25,45 +25,45 @@ type TextInputProps = {
 }
 
 function TextInput(props: TextInputProps) {
-  //autofocus
-  // let inputRef: HTMLInputElement | undefined
-  // const [titleOnTop, setTitleOnTop] = createSignal(false)
+  // autofocus
+  let inputRef: HTMLInputElement | undefined
+  const [titleOnTop, setTitleOnTop] = createSignal(false)
 
-  // onMount(() => {
-  //   if (props.autofocus) {
-  //     inputRef?.focus()
-  //   }
+  onMount(() => {
+    if (props.autofocus) {
+      inputRef?.focus()
+    }
 
-  //   if (props.name && props.nameOnTop) {
-  //     setTitleOnTop(true)
-  //   }
-  // })
+    if (props.name && props.nameOnTop) {
+      setTitleOnTop(true)
+    }
+  })
 
-  // function nameFocus() {
-  //   // do the onBlurFn if provided and return
-  //   if (props.onBlurFn) {
-  //     props.onBlurFn(props.onBlurFnArg) 
-  //     return
-  //   }
+  function nameFocus() {
+    // do the onBlurFn if provided and return
+    if (props.onBlurFn) {
+      props.onBlurFn(props.onBlurFnArg) 
+      return
+    }
 
-  //   // otherwise put the title on top
-  //   if (props.name && titleOnTop()) {
-  //     props.valueSetFn("")
-  //     setTitleOnTop(false)
-  //     props.searchFn?.()
-  //     if (props.setAutocompleteFn) { props.setAutocompleteFn("") }
-  //   }
-  // }
+    // otherwise put the title on top
+    if (props.name && titleOnTop()) {
+      props.valueSetFn("")
+      setTitleOnTop(false)
+      props.searchFn?.()
+      if (props.setAutocompleteFn) { props.setAutocompleteFn("") }
+    }
+  }
 
-  // function clickOnName() {
-  //   setTitleOnTop(true)
-  //   inputRef?.focus()
-  // }
+  function clickOnName() {
+    setTitleOnTop(true)
+    inputRef?.focus()
+  }
 
-  // function triggerSearch(value: string) {
-  //   props.valueSetFn(value)
-  //   props.searchFn?.()
-  // }
+  function triggerSearch(value: string) {
+    props.valueSetFn(value)
+    props.searchFn?.()
+  }
 
   return (
     <div class="text-input">
