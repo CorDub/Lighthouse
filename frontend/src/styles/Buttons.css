@@ -80,3 +80,18 @@
   border-color: var(--grey);
   color: var(--black)
 }
+
+.invisible-button {
+  border: 1px solid transparent;
+  border-radius: 15px;
+  background-color: rgba(227, 232, 231, 0);
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+  transition: 
+    border 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.invisible-button:hover {
+  border: 1px solid var(--black);
+  background-color: rgba(227, 232, 231, 0.75);
+}

@@ -1,0 +1,54 @@
+.sn-line {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.5rem;
+  width: var(--resting-width);
+  height: var(--resting-height);
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+  border-radius: 15px;
+  border: 1px solid transparent;
+  background-color: rgba(227, 232, 231, 0);
+  transition: 
+    width 0.4s ease,
+    height 0.4s ease,
+    border 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.sn-line.sn-line-hover {
+  border: 1px solid var(--black);
+  background-color: rgba(227, 232, 231, 0.75);
+}
+
+.sn-line.snl-opening {
+  width: 500px;
+  height: 100%;
+  background-color: rgba(227, 232, 231, 1);
+}
+
+.snl-open {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 500px;
+  border: 1px solid var(--black);
+  background-color: rgba(227, 232, 231, 1);
+  border-radius: 15px;
+  padding: 0.5rem;
+  gap: 0.5rem;
+}
+
+.snlo-title {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.snlo-channels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.snlo-channel-input {
+  width: 400px;
+}

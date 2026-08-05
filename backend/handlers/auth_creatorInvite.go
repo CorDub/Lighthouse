@@ -9,7 +9,7 @@ import (
 	"Lighthouse/internal/database"
 )
 
-func (apiCfg *ApiConfig) HandleUserInvite(w http.ResponseWriter, r *http.Request) {
+func (apiCfg *ApiConfig) CreateCreatorFromInvite(w http.ResponseWriter, r *http.Request) {
 	//createUserParams defined in users_create
 	decodedBody := createUserParams{}
 
@@ -70,5 +70,5 @@ func (apiCfg *ApiConfig) HandleUserInvite(w http.ResponseWriter, r *http.Request
 	})
 
 	// respond
-	w.WriteHeader(http.StatusCreated)
+	RespondWithJSON(w, http.StatusCreated, createdUser)
 }

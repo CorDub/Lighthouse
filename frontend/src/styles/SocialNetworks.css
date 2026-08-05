@@ -1,0 +1,20 @@
+.social-networks {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+}
+
+.sn-title {
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.sn-medias {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+}

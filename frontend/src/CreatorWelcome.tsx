@@ -54,7 +54,7 @@ function CreatorWelcome() {
       setLanguage(browserLanguage)
     }
 
-    const response = await fetch(`${BASE_URL}/api/users`, {
+    const response = await fetch(`${BASE_URL}/api/users/creatorInvite`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -71,8 +71,9 @@ function CreatorWelcome() {
 
     if (response.ok) {
       const data = await response.json();
-      const parsedUser = UserSchema.parse(data.user);
+      const parsedUser = UserSchema.parse(data);
       setUser(parsedUser);
+      console.log("parseUser", parsedUser)
       navigate("/socialNetworks", { replace: true });
     }
   }
@@ -80,60 +81,60 @@ function CreatorWelcome() {
   return (
     <div class="creator-welcome">
       <Navbar />
-        <form
-          class="cw-form"
-          onSubmit={(e) => createProfile(e)}>
-          <h1 class="cw-heading">
-            <Text
-              value={creaWelText.welcomeHeading}
-              lang={defaults().lang} />
-          </h1>
-          <p class="cw-message">
-            <Text
-              value={creaWelText.welcomeMessage}
-              lang={defaults().lang} />
-          </p>
-          <div class="cw-input">
-            <LockableTextInput 
-              errors={errors()}
-              errorsSetFn={setErrors}
-              value={name()}
-              valueSetFn={setName}/>
-          </div>
-          <div class="cw-input">
-            <TextInput
-              errors={errors()}
-              errorsSetFn={setErrors}
-              value={email()}
-              valueSetFn={setEmail}
-              // placeholder={getText(creaWelText.emailInput, defaults().lang)}
-              name={getText(creaWelText.emailInput, defaults().lang)}
-              bgColor={"var(--white)"}/>
-          </div>
-          <div class="cw-input">
-            <PasswordInput
-              errors={errors()}
-              errorsSetFn={setErrors}
-              value={password()}
-              valueSetFn={setPassword}
-              placeholder={getText(creaWelText.passwordInput, defaults().lang)}/>
-          </div>
+      <form
+        class="cw-form"
+        onSubmit={(e) => createProfile(e)}>
+        <h1 class="cw-heading">
+          <Text
+            value={creaWelText.welcomeHeading}
+            lang={defaults().lang} />
+        </h1>
+        <p class="cw-message">
+          <Text
+            value={creaWelText.welcomeMessage}
+            lang={defaults().lang} />
+        </p>
+        <div class="cw-input">
+          <LockableTextInput 
+            errors={errors()}
+            errorsSetFn={setErrors}
+            value={name()}
+            valueSetFn={setName}/>
+        </div>
+        <div class="cw-input">
+          <TextInput
+            errors={errors()}
+            errorsSetFn={setErrors}
+            value={email()}
+            valueSetFn={setEmail}
+            placeholder={getText(creaWelText.emailInput, defaults().lang)}
+            // name={getText(creaWelText.emailInput, defaults().lang)}
+            bgColor={"var(--white)"}/>
+        </div>
+        <div class="cw-input">
+          <PasswordInput
+            errors={errors()}
+            errorsSetFn={setErrors}
+            value={password()}
+            valueSetFn={setPassword}
+            placeholder={getText(creaWelText.passwordInput, defaults().lang)}/>
+        </div>
+      
+        <Show when={errors().length > 0}>
+          <Errors 
+            errors={errors()}
+            margin={{
+              marginTop: 0,
+              marginBottom: 2
+            }}/>
+        </Show>
         
-          <Show when={errors().length > 0}>
-            <Errors 
-              errors={errors()}
-              margin={{
-                marginTop: 0,
-                marginBottom: 2
-              }}/>
-          </Show>
-          
-          <button class="green-button clickable" onClick={(e) => createProfile(e)}>
-            <Text
-              value={creaWelText.confirmButton}
-              lang={defaults().lang} />
-          </button>
-        </form>
+        <button class="green-button clickable" onClick={(e) => createProfile(e)}>
+          <Text
+            value={creaWelText.confirmButton}
+            lang={defaults().lang} />
+        </button>
+      </form>
 
     </div>
   )
