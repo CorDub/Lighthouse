@@ -1,7 +1,6 @@
 import type { JSX } from "solid-js";
-import { createSignal, Show, onMount } from "solid-js";
+import { createSignal, Show, onMount, createEffect } from "solid-js";
 import "./styles/SocialNetworkLine.css";
-import TextInput from "./TextInput.tsx";
 import Errors from "./Errors";
 import type { ErrorKey } from "./Errors";
 import LockableTextInput from "./LockableTextInput";
@@ -20,6 +19,10 @@ function SocialNetworkLine(props: SocialNetworkLineProps) {
   let lineRef: HTMLDivElement | undefined
   const [channel, setChannel] = createSignal("");
   const [errors, setErrors] = createSignal<ErrorKey[]>([])
+
+  // createEffect(() => {
+  //   console.log("errors", errors())
+  // })
 
   onMount(() => {
     if (!lineRef) return;
@@ -83,21 +86,21 @@ function SocialNetworkLine(props: SocialNetworkLineProps) {
           </div>
           <div class="snlo-channels">
             <div class="snlo-channel-input">
-              {/* <TextInput 
-                value={channel()}
-                valueSetFn={setChannel}
-                errors={errors()}
-                errorsSetFn={setErrors}
-                placeholder={"Channel Name"}/> */}
               <LockableTextInput 
                 value={channel()}
                 valueSetFn={setChannel}
                 errors={errors()}
                 errorsSetFn={setErrors}
-                locked={false}/>
+                locked={false}
+                required={true}
+                valueCheck={["channelName", channel()]}/>
             </div>
           </div>
-          
+        
+          <Show when={errors().length > 0}>
+            <Errors 
+              errors={errors()}/>
+          </Show>
         </div>
       </Show>
     </div>

@@ -19,7 +19,8 @@ function singleCheckForError(check: ValueCheck): ErrorKey[] {
   const checkFunctionsTable = {
     "email": checkEmail,
     "password": checkPassword,
-    "name": checkName
+    "name": checkName,
+    "channelName": checkChannelName
   }
 
   return checkFunctionsTable[check[0]](check[1])
@@ -79,6 +80,23 @@ function checkPassword(value: string): ErrorKey[] {
   const notTooLong = checkMax(value, 72)
   if (!notTooLong) {
     errorList.push("passwordTooLong")
+  }
+
+  return errorList
+}
+
+function checkChannelName(value: string): ErrorKey[] {
+  let errorList: ErrorKey[] = []
+
+  const present = checkRequired(value)
+  if (!present) {
+    errorList.push("channelNameRequired")
+    return errorList
+  }
+
+  const notTooLong = checkMax(value, 100)
+  if (!notTooLong) {
+    errorList.push("channelNameTooLong")
   }
 
   return errorList
