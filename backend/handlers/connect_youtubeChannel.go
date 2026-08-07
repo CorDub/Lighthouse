@@ -6,6 +6,12 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"Lighthouse/internal/database"
+	"Lighthouse/internal/auth"
+
+	"github.com/google/uuid"
+	"golang.org/x/oauth2"
 )
 
 func (apiCfg *ApiConfig) ConnectYouTubeChannel (w http.ResponseWriter, r *http.Request) {
@@ -53,7 +59,25 @@ func (apiCfg *ApiConfig) ConnectYouTubeChannel (w http.ResponseWriter, r *http.R
 		return
 	}
 
-	//if channel exist, ask for OAuth
+	//if channel exist, ask for Oauth
+	// first create the ouath state token in db
+	oauthStateToken, err := apiCfg.prepareOAuthState(r.Context(), userId, channelID, decodedBody.ChannelHandle)
+	if err != nil {
+		RespondWithError(w, http.StatusInternalServerError, "Could not create the oauth state token", err)
+		return
+	}
+
+	// build consent url
+	oauthURL := apiCfg.buildConsentURL(oauthStateToken)
+
+	// Respond with the url
+	type ConnectYouTubeChannelResponseBody struct{
+		AuthURL string `json:"authUrl"`
+	}
+	respBody := ConnectYouTubeChannelResponseBody{
+		AuthURL: oauthURL,
+	}
+	RespondWithJSON(w, http.StatusOK, respBody)
 }
 
 
@@ -76,16 +100,43 @@ func (apiCfg *ApiConfig) verifyChannelExists(ctx context.Context, handle string)
 
 
 
-func (apiCfg *ApiConfig) prepareOAuthCall(ctx context.Context, handle string) (string, error) {
+func (apiCfg *ApiConfig) prepareOAuthState(
+	ctx context.Context, 
+	userId uuid.UUID,
+	channelId string,
+	channelHandle string,
+	) (string, error) {
 	//create state record in DB - userId, channelId, expiry
+	oauthToken := auth.MakeRefreshToken()
 
-	//build consent URL
+	params := database.CreateOAuthStateParams{
+		Token: oauthToken,
+		UserID: userId,
+		Service: database.ServiceYouTube,
+		ChannelID: channelId,
+		ChannelHandle: channelHandle,
+	}
 
-	//return it
+	oauthStateToken, err := apiCfg.DB.CreateOAuthState(ctx, params)
+	if err != nil {
+		log.Printf("Could not create the oauth state token: %s", err)
+		return "", err
+	}
 
-	//frontend refirects browser with window.location.href = authURL
+	return oauthStateToken.Token, nil
+}
 
-	// => creator approves
+
+
+func (apiCfg *ApiConfig) buildConsentURL(oauthStateToken string) string {
+	authURL := apiCfg.YouTubeOAuthConfig.AuthCodeURL(
+		oauthStateToken,
+		oauth2.AccessTypeOffline,
+		oauth2.SetAuthURLParam("prompt", "consent"),
+	)
+
+	return authURL
+}
 
 	// => returns from google at callback location
 
@@ -95,5 +146,4 @@ func (apiCfg *ApiConfig) prepareOAuthCall(ctx context.Context, handle string) (s
 
 	// store the connection data in DB (connections table)
 
-	// get back to app
-}
+	// get back to app - in the same place with postMessage?

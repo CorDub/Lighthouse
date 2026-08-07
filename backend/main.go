@@ -15,6 +15,8 @@ import (
 	_ "github.com/lib/pq"
 	"google.golang.org/api/option"
 	"google.golang.org/api/youtube/v3"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 )
 
 func main() {
@@ -34,6 +36,9 @@ func main() {
 	from := os.Getenv("FROM_TEST")
 	baseURL := "http://localhost:8080"
 	youtubeKey := os.Getenv("YOUTUBE_API_KEY")
+	youtubeSecret := os.Getenv("YOUTUBE_SECRET")
+	youtubeClientId := os.GetEnv("YOUTUBE_CLIENT_ID")
+	youtubeOAuthRedirectURL := os.Getenv("YOUTUBE_OAUTH_REDIRECT_URL")
 	// To DO LATER ON: add From versions for staging / prod
 
 	if environment == "dev" {
@@ -58,6 +63,18 @@ func main() {
 		log.Fatalf("failed to create youtube service: %v", err)
 	}
 
+	// Creating YouTube OAuth config
+	youtubeOAuthConfig := &oauth2.Config{
+		ClientID: youtubeClientId,
+		ClientSecret: youtubeSecret,
+		RedirectURL: youtubeOAuthRedirectURL,
+		Scopes: []string{
+			"https://www.googleapis.com/auth/youtube.readonly",
+			"https://www.googleapis.com/auth/yt-analytics.readonly",
+		},
+		Endpoint: google.Endpoint,
+	}
+
 	// config
 	apiCfg := handlers.ApiConfig{
 		DB: dbQueries,
@@ -72,6 +89,7 @@ func main() {
 		From: from,
 		BaseURL: baseURL,
 		YouTubeService: youtubeService,
+		YouTubeOAuthConfig: youtubeOAuthConfig,
 	}
 
 	//server setup
@@ -100,6 +118,7 @@ func main() {
 	mux.HandleFunc("POST /api/checkPassword", apiCfg.CheckPassword)
 	mux.HandleFunc("POST /api/changePassword", apiCfg.ChangePassword)
 	mux.HandleFunc("POST /api/users/creatorInvite", apiCfg.CreateCreatorFromInvite)
+	mux.HandleFunc("GET /api/youtube/oauth/callback", apiCfg.YouTubeOAuthCallback)
 
 	//protected
 	mux.Handle("GET /api/users", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.GetUsers)))

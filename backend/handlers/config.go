@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"google.golang.org/api/youtube/v3"
+	"golang.org/x/oauth2"
 )
 
 type ApiConfig struct {
@@ -22,6 +23,7 @@ type ApiConfig struct {
 	From string
 	BaseURL string
 	YouTubeService *youtube.Service
+	YouTubeOAuthConfig *oauth2.Config
 }
 
 var validate = validator.New(validator.WithRequiredStructEnabled())

@@ -34,3 +34,26 @@ func (role Role) IsValid() bool {
 		}
 	return false
 }
+
+///
+
+type Service string
+
+const (
+	ServiceYouTube Service = "youtube"
+	ServiceInstagram Service = "instagram"
+	ServiceTiktok Service = "tiktok"
+	ServiceTwitter Service = "twitter"
+	ServiceTwitch Service = "twitch"
+)
+
+func (service Service) IsValid() bool {
+	if service == ServiceYouTube ||
+	service == ServiceInstagram ||
+	service == ServiceTiktok ||
+	service == ServiceTwitter ||
+	service == ServiceTwitch {
+		return true
+	}
+	return false
+}

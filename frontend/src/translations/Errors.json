@@ -34,5 +34,18 @@
   "channelNameTooLong": {
     "en": "Channel name is too long",
     "es": "Nombre del canal demasiado largo"
+  },
+  "popupBlocked": {
+    "en": "Authentification pop-up was blocked. Please allow pop-ups.",
+    "es": "Ventana emergente bloqueada. Por favor permite ventanas emergentes."
+  },
+  "channelNotFound": {
+    "en": "Channel not found. Please check the spelling.",
+    "es": "Canal no encontrado. Asegurese de la ortografía por favor."
+  },
+  "unexpectedError": {
+    "en": "Unexpected error. Please check again later.",
+    "es": "Error inesperado. Por favor intenta de nuevo más tarde."
   }
+
 }
