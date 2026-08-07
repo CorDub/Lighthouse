@@ -3,6 +3,7 @@ import { createSignal, Show, onMount } from "solid-js";
 import "./styles/SocialNetworkLine.css";
 import Errors from "./Errors";
 import type { ErrorKey } from "./Errors";
+import { checkForErrors } from "./helpers/checkForErrors.ts";
 import LockableTextInput from "./LockableTextInput";
 import { BASE_URL } from "./helpers/config";
 
@@ -20,6 +21,7 @@ function SocialNetworkLine(props: SocialNetworkLineProps) {
   let lineRef: HTMLDivElement | undefined
   const [channel, setChannel] = createSignal("");
   const [errors, setErrors] = createSignal<ErrorKey[]>([])
+  const [isConnecting, setConnecting] = createSignal(false)
 
   onMount(() => {
     if (!lineRef) return;
@@ -47,15 +49,61 @@ function SocialNetworkLine(props: SocialNetworkLineProps) {
     }, 400)
   }
 
-  async function connectChannel() {
-    const response = await fetch(`${BASE_URL}/api/connectChannel/${props.title.toLowerCase()}`, {
-      method: "POST",
-      credentials: "include",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        channelName: channel(),
+  async function connectChannel(e: Event) {
+    e.preventDefault();
+
+    // if already connecting returns
+    if (isConnecting()) { return };
+
+    // checks 
+    const newErrorList = checkForErrors(["channelName", channel()])
+    setErrors(newErrorList)
+    if (errors().length > 0) { return }
+
+    //open blank pop-up straightaway before any awaits takes too long and gets blocked by popup blockers
+    const popup = window.open("", "youtube-oauth", "width")
+    if (!popup) {
+      setErrors(["popupBlocked"]);
+      return;
+    }
+
+    setConnecting(true);
+    setErrors([]);
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/connectChannel/${props.title.toLowerCase()}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          channelName: channel(),
+        })
       })
-    })
+
+      // error handling
+      if (response.status === 404) {
+        setErrors(["channelNotFound"])
+        popup.close()
+        setConnecting(false)
+        return
+      }
+      if (!response.ok) {
+        setErrors(["unexpectedError"])
+        popup.close()
+        setConnecting(false)
+        return
+      }
+
+      if (response.ok) {
+        const data = await response.json()
+        popup.location.href = data.authUrl;
+      }
+    } catch(error) {
+      console.log("Error connecting the channel to YT", error)
+      setErrors(["unexpectedError"])
+      popup.close()
+      setConnecting(false); 
+    }
   }
 
   function prependAtOnInput(value:string) {

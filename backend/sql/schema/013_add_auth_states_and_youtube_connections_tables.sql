@@ -23,7 +23,8 @@ CREATE TABLE connections (
   access_token TEXT NOT NULL,
   refresh_token TEXT,
   token_expires_at TIMESTAMPTZ,
-  scopes TEXT NOT NULL, UNIQUE (user_id, service, channel_id)
+  scopes TEXT NOT NULL, 
+  UNIQUE (user_id, service, channel_id)
 );
 
 -- +goose Down

@@ -16,7 +16,7 @@ type Connection struct {
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	UserID         uuid.UUID
-	Service        string
+	Service        Service
 	ChannelID      string
 	ChannelHandle  string
 	AccessToken    string
@@ -41,7 +41,7 @@ type OauthState struct {
 	UpdatedAt     time.Time
 	ExpiresAt     time.Time
 	UserID        uuid.UUID
-	Service       string
+	Service       Service
 	ChannelID     string
 	ChannelHandle string
 }

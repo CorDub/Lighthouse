@@ -13,3 +13,9 @@ sql:
           - column: "users.role"
             go_type: 
               type: "Role"
+          - column: "oauth_states.service"
+            go_type:
+              type: "Service"
+          - column: "connections.service"
+            go_type:
+              type: "Service"
