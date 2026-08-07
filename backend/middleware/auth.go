@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"context"
 	
 	"Lighthouse/handlers"
 	"Lighthouse/internal/auth"
@@ -18,11 +19,14 @@ func ValJWT(jwtSecret string, next http.Handler) http.Handler {
 		tokenString := cookie.Value
 
 		//validate JWT
-		if _, err := auth.ValidateJWT(tokenString, jwtSecret); err != nil {
+		userID, err := auth.ValidateJWT(tokenString, jwtSecret)
+		if err != nil {
 			handlers.RespondWithError(w, http.StatusUnauthorized, "Unauthorized", err)
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		ctx := context.WithValue(r.Context(), handlers.userIDKey, userID)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
 	}) 
 }

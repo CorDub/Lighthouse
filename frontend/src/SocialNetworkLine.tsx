@@ -1,9 +1,10 @@
 import type { JSX } from "solid-js";
-import { createSignal, Show, onMount, createEffect } from "solid-js";
+import { createSignal, Show, onMount } from "solid-js";
 import "./styles/SocialNetworkLine.css";
 import Errors from "./Errors";
 import type { ErrorKey } from "./Errors";
 import LockableTextInput from "./LockableTextInput";
+import { BASE_URL } from "./helpers/config";
 
 type SocialNetworkLineProps = {
   title: string,
@@ -19,10 +20,6 @@ function SocialNetworkLine(props: SocialNetworkLineProps) {
   let lineRef: HTMLDivElement | undefined
   const [channel, setChannel] = createSignal("");
   const [errors, setErrors] = createSignal<ErrorKey[]>([])
-
-  // createEffect(() => {
-  //   console.log("errors", errors())
-  // })
 
   onMount(() => {
     if (!lineRef) return;
@@ -48,6 +45,24 @@ function SocialNetworkLine(props: SocialNetworkLineProps) {
       setOpening(false)
       setOpen(false)
     }, 400)
+  }
+
+  async function connectChannel() {
+    const response = await fetch(`${BASE_URL}/api/connectChannel/${props.title.toLowerCase()}`, {
+      method: "POST",
+      credentials: "include",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        channelName: channel(),
+      })
+    })
+  }
+
+  function prependAtOnInput(value:string) {
+    if (value.length > 0 && !value.startsWith("@")) {
+      value = "@" +value;
+    }
+    setChannel(value)
   }
 
   return (
@@ -84,22 +99,44 @@ function SocialNetworkLine(props: SocialNetworkLineProps) {
               {props.title}
             </div>
           </div>
-          <div class="snlo-channels">
+
+          <Show when={props.title==="YouTube"}>
+            <div class="snlo-handle">
+              <p class="snlo-handle-title">Please provide your YouTube channel handle</p>
+              <p class="snlo-handle-text">The handle starts at @ in the url of your channel</p>
+              <p class="snlo-handle-text">For example, @deDOS in "youtube.com/@deDOS"</p>
+            </div>
+          </Show>
+
+          <form class="snlo-channels"
+            onSubmit={connectChannel}>
             <div class="snlo-channel-input">
               <LockableTextInput 
                 value={channel()}
-                valueSetFn={setChannel}
+                valueSetFn={props.title === "YouTube" ? prependAtOnInput : setChannel}
                 errors={errors()}
                 errorsSetFn={setErrors}
                 locked={false}
                 required={true}
                 valueCheck={["channelName", channel()]}/>
             </div>
-          </div>
+            <div class="snlo-button">
+              <button class="green-button"
+                type="button"
+                onClick={connectChannel}>
+                  Connect to Lighthouse
+              </button>
+            </div>
+            
+          </form>
         
           <Show when={errors().length > 0}>
             <Errors 
-              errors={errors()}/>
+              errors={errors()}
+              margin={{
+                "marginTop": 0,
+                "marginBottom": 0
+              }}/>
           </Show>
         </div>
       </Show>

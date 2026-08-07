@@ -25,12 +25,11 @@ type createUserParams struct {
 func (apiCfg *ApiConfig) CreateUser(w http.ResponseWriter, r *http.Request) {
 	params := createUserParams{}
 	err := decodeRequestBody(r, &params)
-
 	if err != nil {
 		RespondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
 		return
 	}
-
+	
 	createdUser, err := apiCfg.createUser(r.Context(), params)
 	errCheckError := apiCfg.respondCreateUserError(w, err) 
 	if errCheckError != nil {

@@ -6,6 +6,7 @@ import (
 	"Lighthouse/internal/database"
 
 	"github.com/go-playground/validator/v10"
+	"google.golang.org/api/youtube/v3"
 )
 
 type ApiConfig struct {
@@ -20,6 +21,7 @@ type ApiConfig struct {
 	MailtrapPassword string
 	From string
 	BaseURL string
+	YouTubeService *youtube.Service
 }
 
 var validate = validator.New(validator.WithRequiredStructEnabled())
