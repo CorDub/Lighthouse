@@ -34,8 +34,8 @@
   border: 1px solid var(--black);
   background-color: rgba(227, 232, 231, 1);
   border-radius: 15px;
-  padding: 0.5rem;
-  gap: 0.5rem;
+  padding: 1rem;
+  gap: 1rem;
 }
 
 .snlo-title {
@@ -47,8 +47,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1rem;
 }
 
 .snlo-channel-input {
   width: 400px;
+}
+
+.snlo-handle-title {
+  font-weight: 600;
+  font-style: bold;
+}
+
+.snlo-handle-text {
+  font-size: 14px;
 }

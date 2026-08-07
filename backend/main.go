@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"net/http"
@@ -12,6 +13,8 @@ import (
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"google.golang.org/api/option"
+	"google.golang.org/api/youtube/v3"
 )
 
 func main() {
@@ -30,6 +33,7 @@ func main() {
 	secure := true
 	from := os.Getenv("FROM_TEST")
 	baseURL := "http://localhost:8080"
+	youtubeKey := os.Getenv("YOUTUBE_API_KEY")
 	// To DO LATER ON: add From versions for staging / prod
 
 	if environment == "dev" {
@@ -48,6 +52,12 @@ func main() {
 	}
 	dbQueries := database.New(dbConn)
 
+	// Creating YouTube SDK Service
+	youtubeService, err := youtube.NewService(context.Background(), option.WithAPIKey(youtubeKey))
+	if err != nil {
+		log.Fatalf("failed to create youtube service: %v", err)
+	}
+
 	// config
 	apiCfg := handlers.ApiConfig{
 		DB: dbQueries,
@@ -61,6 +71,7 @@ func main() {
 		MailtrapPassword: mailtrapPassword,
 		From: from,
 		BaseURL: baseURL,
+		YouTubeService: youtubeService,
 	}
 
 	//server setup
@@ -96,6 +107,7 @@ func main() {
 	mux.Handle("POST /api/reports", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.CreateReport)))
 	mux.Handle("GET /api/users/creatorsAvailable", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.GetCreatorsAvailable)))
 	mux.Handle("POST /api/invite", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.CreateMagicLinkInvite)))
+	mux.Handle("POST /api/connectChannel/youtube", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.ConnectYouTubeChannel)))
 
 	handler := middleware.Cors(apiCfg.Env, mux)
 

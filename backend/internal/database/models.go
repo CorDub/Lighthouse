@@ -11,6 +11,20 @@ import (
 	"github.com/google/uuid"
 )
 
+type Connection struct {
+	ID             uuid.UUID
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	UserID         uuid.UUID
+	Service        string
+	ChannelID      string
+	ChannelHandle  string
+	AccessToken    string
+	RefreshToken   sql.NullString
+	TokenExpiresAt sql.NullTime
+	Scopes         string
+}
+
 type MagicLinkToken struct {
 	Token     string
 	CreatedAt time.Time
@@ -19,6 +33,17 @@ type MagicLinkToken struct {
 	ExpiresAt time.Time
 	RevokedAt sql.NullTime
 	Name      sql.NullString
+}
+
+type OauthState struct {
+	Token         string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	ExpiresAt     time.Time
+	UserID        uuid.UUID
+	Service       string
+	ChannelID     string
+	ChannelHandle string
 }
 
 type RefreshToken struct {

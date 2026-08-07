@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"context"
 
 	"Lighthouse/internal/database"
+
+	"github.com/google/uuid"
 )
 
 func RespondWithError(w http.ResponseWriter, code int, msg string, err error) {
@@ -62,4 +65,16 @@ func decodeRequestBody[T any](r *http.Request, payload *T) error {
 	}
 
 	return nil
+}
+
+// this avoids clashes for third party libraries calling also a ctx.Value with string "userID"
+// and doing so overwriting the result
+// using a specific type ensures there's no collision
+// function used in middleware - ValJWT but written here to avoid cyclical imports
+type contextKey string
+const userIDKey contextKey = "userID"
+
+func GetUserIdFromJWT(ctx context.Context) (uuid.UUID, bool) {
+	userID, ok := ctx.Value(userIDKey).(uuid.UUID)
+	return userID, ok
 }
