@@ -25,7 +25,7 @@ func ValJWT(jwtSecret string, next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), handlers.userIDKey, userID)
+		ctx := context.WithValue(r.Context(), handlers.UserIDKey, userID)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}) 

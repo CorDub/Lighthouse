@@ -72,9 +72,9 @@ func decodeRequestBody[T any](r *http.Request, payload *T) error {
 // using a specific type ensures there's no collision
 // function used in middleware - ValJWT but written here to avoid cyclical imports
 type contextKey string
-const userIDKey contextKey = "userID"
+const UserIDKey contextKey = "userID"
 
 func GetUserIdFromJWT(ctx context.Context) (uuid.UUID, bool) {
-	userID, ok := ctx.Value(userIDKey).(uuid.UUID)
+	userID, ok := ctx.Value(UserIDKey).(uuid.UUID)
 	return userID, ok
 }

@@ -16,6 +16,26 @@ func (apiCfg *ApiConfig) YouTubeOAuthCallback(w http.ResponseWriter, r *http.Req
 	// extract state and code query parameters
 	queryParams := r.URL.Query()
 
+	//case where creator cancels or clicks no
+	errParam := queryParams.Get("error")
+	if errParam != "" {
+		log.Printf("User denied OAuth consent: %s", errParam)
+
+		// get oauth state
+		state := queryParams.Get("state")
+		fullOAuthState, lookupErr := apiCfg.DB.GetOAuthStateFromToken(r.Context(), state)
+		if lookupErr != nil {
+			apiCfg.sendOAuthPostMessage(w, "cancelled", "")
+			return
+		}
+
+		// delete it
+		_ = apiCfg.DB.DeleteOAuthStateFromToken(r.Context(), fullOAuthState.Token)
+		apiCfg.sendOAuthPostMessage(w, "cancelled", fullOAuthState.ChannelHandle)
+		return
+	}
+
+	// case where auth succeeds
 	code := queryParams.Get("code")
 	state := queryParams.Get("state")
 
@@ -45,7 +65,10 @@ func (apiCfg *ApiConfig) YouTubeOAuthCallback(w http.ResponseWriter, r *http.Req
 	grantedScopes, ok := googleToken.Extra("scope").(string)
 	if !ok {
 		log.Println("Scopes granted unavailable through Extra()")
-		RespondWithError(w, http.StatusBadGateway, "Could not complete authorization", err)
+		RespondWithError(w, 
+			http.StatusBadGateway, 
+			"Could not complete authorization", 
+			errors.New("scope not present in token response."))
 		return
 	}
 	connectionParams := database.CreateConnectionParams{
@@ -80,9 +103,8 @@ func (apiCfg *ApiConfig) YouTubeOAuthCallback(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	// send a message to the waiting page to update it correctly
-	
-
+	// send a message to close the pop up and postMessage back to the original tab to update it
+	apiCfg.sendOAuthPostMessage(w, "success", connection.ChannelHandle)
 }
 
 
@@ -114,11 +136,11 @@ func (apiCfg *ApiConfig) checkOAuthStateValidity(ctx context.Context, token stri
 	if err != nil {
 		// no corresponding token / oauth state found
 		if errors.Is(err, sql.ErrNoRows) {
-			log.Printf("OAuth state token not found: %w", err)
+			log.Printf("OAuth state token not found: %v", err)
 			return database.OauthState{}, ErrOAuthStateNotFound
 		}
 
-		log.Printf("Error getting the full oauth state from the db: %w", err)
+		log.Printf("Error getting the full oauth state from the db: %v", err)
 		return database.OauthState{}, ErrGettingOAuthState
 	}
 
@@ -135,4 +157,30 @@ func (apiCfg *ApiConfig) checkOAuthStateValidity(ctx context.Context, token stri
 	}
 
 	return fullOAuthState, nil
+}
+
+
+
+func (apiCfg *ApiConfig) sendOAuthPostMessage(
+w http.ResponseWriter, 
+status string,
+channelHandle string) {
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, `<!DOCTYPE html>
+		<html>
+			<body>
+				<script>
+					if (window.opener) {
+						window.opener.postMessage({
+							source: "lighthouse-oauth",
+							status: %q,
+							channelHandle: %q
+						}, %q);
+					}
+					window.close();
+				</script>
+			</body>
+		</html>
+	`, status, channelHandle, apiCfg.FrontEndOrigin)
 }
