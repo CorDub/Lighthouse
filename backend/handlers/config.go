@@ -24,6 +24,7 @@ type ApiConfig struct {
 	BaseURL string
 	YouTubeService *youtube.Service
 	YouTubeOAuthConfig *oauth2.Config
+	FrontEndOrigin string
 }
 
 var validate = validator.New(validator.WithRequiredStructEnabled())

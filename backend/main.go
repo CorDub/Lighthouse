@@ -37,8 +37,9 @@ func main() {
 	baseURL := "http://localhost:8080"
 	youtubeKey := os.Getenv("YOUTUBE_API_KEY")
 	youtubeSecret := os.Getenv("YOUTUBE_SECRET")
-	youtubeClientId := os.GetEnv("YOUTUBE_CLIENT_ID")
+	youtubeClientId := os.Getenv("YOUTUBE_CLIENT_ID")
 	youtubeOAuthRedirectURL := os.Getenv("YOUTUBE_OAUTH_REDIRECT_URL")
+	frontendOrigin := os.Getenv("FRONTEND_ORIGIN")
 	// To DO LATER ON: add From versions for staging / prod
 
 	if environment == "dev" {
@@ -90,6 +91,7 @@ func main() {
 		BaseURL: baseURL,
 		YouTubeService: youtubeService,
 		YouTubeOAuthConfig: youtubeOAuthConfig,
+		FrontEndOrigin: frontendOrigin,
 	}
 
 	//server setup
