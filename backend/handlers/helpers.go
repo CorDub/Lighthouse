@@ -78,3 +78,13 @@ func GetUserIdFromJWT(ctx context.Context) (uuid.UUID, bool) {
 	userID, ok := ctx.Value(UserIDKey).(uuid.UUID)
 	return userID, ok
 }
+
+func dbConnectionToConnection(connection database.Connection) Connection {
+	return Connection{
+		ID: connection.ID,
+		Service: connection.Service,
+		ChannelID: connection.ChannelID,
+		ChannelHandle: connection.ChannelHandle,
+		Scopes: connection.Scopes,
+	}
+}

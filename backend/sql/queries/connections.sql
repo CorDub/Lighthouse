@@ -11,3 +11,8 @@ VALUES (
   $8
 )
 RETURNING *;
+
+-- name: GetConnections :many
+SELECT *
+FROM connections
+WHERE user_id = $1;
