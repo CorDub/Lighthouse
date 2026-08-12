@@ -14,4 +14,8 @@ var (
 	ErrGettingOAuthState = errors.New("Couldn't get OAuth state")
 	ErrOAuthStateExpired = errors.New("OAuth state expired")
 	ErrWrongOAuthService = errors.New("Wrong OAuth state service")
+	ErrGettingConnection = errors.New("Couldn't get connection")
+	ErrUnauthorized = errors.New("Unauthorized")
+	ErrConnectionNotFound = errors.New("Connection not found")
+	ErrDeactivatingConnection = errors.New("Could not deactivate connection")
 )

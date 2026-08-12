@@ -11,4 +11,5 @@ type Connection struct {
 	ChannelID string `json:"channelId"`
 	ChannelHandle string `json:"channelHandle"`
 	Scopes string `json:"scopes"`
+	Active bool `json:"active"`
 }

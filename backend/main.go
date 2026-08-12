@@ -130,6 +130,7 @@ func main() {
 	mux.Handle("POST /api/invite", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.CreateMagicLinkInvite)))
 	mux.Handle("POST /api/connectChannel/youtube", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.ConnectYouTubeChannel)))
 	mux.Handle("GET /api/connections", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.GetCreatorConnections)))
+	mux.Handle("PATCH /api/connections/{id}", middleware.ValJWT(apiCfg.JWT, http.HandlerFunc(apiCfg.ToggleConnection)))
 
 	handler := middleware.Cors(apiCfg.Env, mux)
 
