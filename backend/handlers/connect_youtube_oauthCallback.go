@@ -183,4 +183,5 @@ channelHandle string) {
 			</body>
 		</html>
 	`, status, channelHandle, apiCfg.FrontEndOrigin)
+	log.Printf("sent postMessage with status %q and channelhandle %q", status, channelHandle)
 }

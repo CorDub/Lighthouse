@@ -46,6 +46,14 @@
   "unexpectedError": {
     "en": "Unexpected error. Please check again later.",
     "es": "Error inesperado. Por favor intenta de nuevo más tarde."
+  },
+  "oauthFailed": {
+    "en": "The authorization process failed with an unexpected error. Please connect the channel later.",
+    "es": "El proceso de autorización fracasó con un error inesperado. Por favor conecte el canal más tarde."
+  },
+  "oauthDenied": {
+    "en": "The authorization process was cancelled. The channel has not been connected.",
+    "es": "El proceso de autorización fue cancelado. El canal no se ha conectado."
   }
 
 }

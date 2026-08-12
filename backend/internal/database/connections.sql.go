@@ -65,3 +65,44 @@ func (q *Queries) CreateConnection(ctx context.Context, arg CreateConnectionPara
 	)
 	return i, err
 }
+
+const getConnections = `-- name: GetConnections :many
+SELECT id, created_at, updated_at, user_id, service, channel_id, channel_handle, access_token, refresh_token, token_expires_at, scopes
+FROM connections
+WHERE user_id = $1
+`
+
+func (q *Queries) GetConnections(ctx context.Context, userID uuid.UUID) ([]Connection, error) {
+	rows, err := q.db.QueryContext(ctx, getConnections, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Connection
+	for rows.Next() {
+		var i Connection
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.UserID,
+			&i.Service,
+			&i.ChannelID,
+			&i.ChannelHandle,
+			&i.AccessToken,
+			&i.RefreshToken,
+			&i.TokenExpiresAt,
+			&i.Scopes,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
