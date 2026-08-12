@@ -12,7 +12,22 @@ VALUES (
 )
 RETURNING *;
 
+
 -- name: GetConnections :many
 SELECT *
 FROM connections
 WHERE user_id = $1;
+
+
+-- name: GetConnectionWithID :one
+SELECT *
+FROM connections
+WHERE id = $1;
+
+
+-- name: ToggleConnection :one
+UPDATE connections
+SET updated_at = NOW(),
+  active = $2
+WHERE id = $1
+RETURNING *;

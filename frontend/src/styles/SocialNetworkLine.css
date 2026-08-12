@@ -40,6 +40,11 @@
 
 .snlo-title {
   display: flex;
+  justify-content: space-between;
+}
+
+.snlo-title-left {
+  display: flex;
   gap: 0.5rem;
 }
 
@@ -61,4 +66,14 @@
 
 .snlo-handle-text {
   font-size: 14px;
+}
+
+.snlc-add-button-line {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.snlc-add-button {
+  width: 40px;
 }

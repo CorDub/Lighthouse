@@ -24,7 +24,7 @@ VALUES (
   $7,
   $8
 )
-RETURNING id, created_at, updated_at, user_id, service, channel_id, channel_handle, access_token, refresh_token, token_expires_at, scopes
+RETURNING id, created_at, updated_at, user_id, service, channel_id, channel_handle, access_token, refresh_token, token_expires_at, scopes, active
 `
 
 type CreateConnectionParams struct {
@@ -62,12 +62,39 @@ func (q *Queries) CreateConnection(ctx context.Context, arg CreateConnectionPara
 		&i.RefreshToken,
 		&i.TokenExpiresAt,
 		&i.Scopes,
+		&i.Active,
+	)
+	return i, err
+}
+
+const getConnectionWithID = `-- name: GetConnectionWithID :one
+SELECT id, created_at, updated_at, user_id, service, channel_id, channel_handle, access_token, refresh_token, token_expires_at, scopes, active
+FROM connections
+WHERE id = $1
+`
+
+func (q *Queries) GetConnectionWithID(ctx context.Context, id uuid.UUID) (Connection, error) {
+	row := q.db.QueryRowContext(ctx, getConnectionWithID, id)
+	var i Connection
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.UserID,
+		&i.Service,
+		&i.ChannelID,
+		&i.ChannelHandle,
+		&i.AccessToken,
+		&i.RefreshToken,
+		&i.TokenExpiresAt,
+		&i.Scopes,
+		&i.Active,
 	)
 	return i, err
 }
 
 const getConnections = `-- name: GetConnections :many
-SELECT id, created_at, updated_at, user_id, service, channel_id, channel_handle, access_token, refresh_token, token_expires_at, scopes
+SELECT id, created_at, updated_at, user_id, service, channel_id, channel_handle, access_token, refresh_token, token_expires_at, scopes, active
 FROM connections
 WHERE user_id = $1
 `
@@ -93,6 +120,7 @@ func (q *Queries) GetConnections(ctx context.Context, userID uuid.UUID) ([]Conne
 			&i.RefreshToken,
 			&i.TokenExpiresAt,
 			&i.Scopes,
+			&i.Active,
 		); err != nil {
 			return nil, err
 		}
@@ -105,4 +133,37 @@ func (q *Queries) GetConnections(ctx context.Context, userID uuid.UUID) ([]Conne
 		return nil, err
 	}
 	return items, nil
+}
+
+const toggleConnection = `-- name: ToggleConnection :one
+UPDATE connections
+SET updated_at = NOW(),
+  active = $2
+WHERE id = $1
+RETURNING id, created_at, updated_at, user_id, service, channel_id, channel_handle, access_token, refresh_token, token_expires_at, scopes, active
+`
+
+type ToggleConnectionParams struct {
+	ID     uuid.UUID
+	Active bool
+}
+
+func (q *Queries) ToggleConnection(ctx context.Context, arg ToggleConnectionParams) (Connection, error) {
+	row := q.db.QueryRowContext(ctx, toggleConnection, arg.ID, arg.Active)
+	var i Connection
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.UserID,
+		&i.Service,
+		&i.ChannelID,
+		&i.ChannelHandle,
+		&i.AccessToken,
+		&i.RefreshToken,
+		&i.TokenExpiresAt,
+		&i.Scopes,
+		&i.Active,
+	)
+	return i, err
 }

@@ -86,5 +86,6 @@ func dbConnectionToConnection(connection database.Connection) Connection {
 		ChannelID: connection.ChannelID,
 		ChannelHandle: connection.ChannelHandle,
 		Scopes: connection.Scopes,
+		Active: connection.Active,
 	}
 }

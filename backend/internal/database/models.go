@@ -23,6 +23,7 @@ type Connection struct {
 	RefreshToken   sql.NullString
 	TokenExpiresAt sql.NullTime
 	Scopes         string
+	Active         bool
 }
 
 type MagicLinkToken struct {

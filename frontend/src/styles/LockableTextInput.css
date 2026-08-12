@@ -5,6 +5,10 @@
   justify-content: center;
 }
 
+.locked {
+  width: 200px;
+}
+
 .lti-locked {
   display: flex;
   justify-content: space-between;
@@ -35,6 +39,12 @@
   border: 1px solid var(--black);
   width: 100%;
   background-color: var(--white);
+}
+
+.lti-deactivated {
+  background-color: var(--shadow-pale-green);
+  color: var(--white);
+  border: 1px solid var(--white);
 }
 
 .lti-edit-svg {
