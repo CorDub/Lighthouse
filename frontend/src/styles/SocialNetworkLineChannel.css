@@ -16,6 +16,7 @@
 .snlc-channel-link {
   border-radius: 50%;
   padding: 0.15rem;
+  /* position: relative; */
 }
 
 .snlc-activated {
